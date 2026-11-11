@@ -80,6 +80,18 @@
       .notes-panel { padding:16px; }
       .section-hint { font-size:11px; }
     }
+
+    .search-wrap { display:flex; align-items:center; gap:10px; margin:0 0 28px; padding:10px 12px; border:1px solid rgba(164,183,241,.2); border-radius:17px; background:linear-gradient(135deg,rgba(35,49,78,.66),rgba(12,21,38,.72)); box-shadow:inset 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.12); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); }
+    .search-symbol { flex:0 0 auto; color:#aebde7; font-size:18px; padding-left:3px; }
+    .search-wrap input { min-width:0; padding:9px 2px; border:0; background:transparent; box-shadow:none; font-size:14px; }
+    .search-wrap input:focus { border:0; box-shadow:none; }
+    .search-wrap input::placeholder { color:#8493b2; }
+    .search-key { flex:0 0 auto; padding:4px 7px; border:1px solid var(--line); border-radius:7px; color:#8f9fbe; font-size:11px; }
+    .search-clear { display:none; padding:5px 9px; border-radius:9px; font-size:12px; }
+    .search-empty { display:none; margin:-19px 3px 25px; color:#aebbd6; font-size:13px; }
+    .app-card[hidden] { display:none; }
+    @media (max-width:560px) { .search-wrap { margin-bottom:25px; } }
+
     @media (prefers-reduced-motion:reduce) { *,*:before,*:after { scroll-behavior:auto!important; transition:none!important; } }
   </style>
 </head>
@@ -91,6 +103,13 @@
     </header>
     <h1>Welcome back<span class="accent">.</span></h1>
     <p class="intro">Your space. Your shortcuts. Your rules.</p>
+    <label class="search-wrap" for="appSearch">
+      <span class="search-symbol" aria-hidden="true">⌕</span>
+      <input id="appSearch" type="search" placeholder="Search your apps..." autocomplete="off" aria-label="Search quick launch apps">
+      <span class="search-key" aria-hidden="true">/</span>
+      <button class="secondary search-clear" id="clearSearch" type="button" aria-label="Clear search">Clear</button>
+    </label>
+    <p class="search-empty" id="searchEmpty" role="status" aria-live="polite">No matching apps. Try another search.</p>
     <section class="hero">
       <div class="hero-top">
         <span class="eyebrow">Your local time</span>
@@ -150,6 +169,42 @@
     }
     updateClock();
     setInterval(updateClock, 1000);
+    // Quick launch search: filters app cards without changing their destinations.
+    const appSearch = document.getElementById("appSearch");
+    const clearSearch = document.getElementById("clearSearch");
+    const searchEmpty = document.getElementById("searchEmpty");
+    const appCards = Array.from(document.querySelectorAll(".app-card"));
+    function filterApps() {
+      const query = appSearch.value.trim().toLocaleLowerCase();
+      let visible = 0;
+      appCards.forEach(card => {
+        const matches = card.textContent.toLocaleLowerCase().includes(query);
+        card.hidden = !matches;
+        if (matches) visible++;
+      });
+      searchEmpty.style.display = visible === 0 ? "block" : "none";
+      clearSearch.style.display = query ? "inline-flex" : "none";
+    }
+    appSearch.addEventListener("input", filterApps);
+    clearSearch.addEventListener("click", () => {
+      appSearch.value = "";
+      filterApps();
+      appSearch.focus();
+    });
+    document.addEventListener("keydown", event => {
+      const active = document.activeElement;
+      const typing = active && (active.tagName === "INPUT" || active.tagName === "TEXTAREA" || active.isContentEditable);
+      if (event.key === "/" && !typing && !event.ctrlKey && !event.metaKey && !event.altKey) {
+        event.preventDefault();
+        appSearch.focus();
+      }
+      if (event.key === "Escape" && active === appSearch) {
+        appSearch.value = "";
+        filterApps();
+        appSearch.blur();
+      }
+    });
+
     // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
     const notes = document.getElementById("notes");
     const pinSetup = document.getElementById("pinSetup");
