@@ -247,6 +247,58 @@
       .app-card:hover .app-icon { transform:none; }
     }
 
+
+    /* Focus List: compact, touch-friendly task tracker with local-only storage. */
+    .focus-panel {
+      position:relative; overflow:hidden; padding:19px;
+      border:1px solid rgba(172,192,244,.19); border-radius:21px;
+      background:radial-gradient(ellipse at 5% 0%,rgba(110,153,226,.13),transparent 48%),linear-gradient(145deg,rgba(29,43,70,.72),rgba(11,20,36,.8));
+      box-shadow:0 14px 36px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.11);
+      -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%);
+    }
+    .focus-panel:before { content:""; position:absolute; top:0; left:14%; right:14%; height:1px; background:linear-gradient(90deg,transparent,rgba(195,214,255,.38),transparent); pointer-events:none; }
+    .focus-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; }
+    .focus-heading h2 { font-size:17px; }
+    .focus-count { color:#9fb0d3; font-size:11px; white-space:nowrap; }
+    .focus-progress { height:5px; overflow:hidden; margin:-3px 0 14px; border-radius:99px; background:rgba(255,255,255,.07); }
+    .focus-progress > span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#7f9dff,#76d9d0); box-shadow:0 0 12px rgba(119,177,255,.35); transition:width .3s ease; }
+    .focus-add { display:flex; gap:8px; }
+    .focus-add input { min-width:0; padding:11px 12px; font-size:13px; }
+    .focus-add button { flex:0 0 auto; padding:10px 13px; }
+    .focus-list { display:grid; gap:7px; margin:13px 0 0; padding:0; list-style:none; }
+    .focus-task { display:flex; align-items:center; gap:9px; min-width:0; padding:9px 10px; border:1px solid rgba(157,180,231,.1); border-radius:12px; background:rgba(255,255,255,.025); animation:focus-in .2s ease both; }
+    .focus-toggle { display:grid; place-items:center; flex:0 0 23px; width:23px; height:23px; padding:0; border-radius:8px; font-size:13px; background:rgba(255,255,255,.045); border-color:rgba(164,185,235,.22); }
+    .focus-task span { min-width:0; flex:1; overflow-wrap:anywhere; color:#dce5fa; font-size:13px; line-height:1.4; }
+    .focus-task.done span { color:#8493b0; text-decoration:line-through; }
+    .focus-task.done .focus-toggle { color:#b9ffe2; background:rgba(91,196,153,.14); border-color:rgba(112,220,175,.28); }
+    .focus-delete { padding:4px 7px; border:0; background:transparent; color:#8291ad; font-size:16px; }
+    .focus-delete:hover { color:#ffaaaa; }
+    .focus-empty { margin:14px 2px 2px; color:#8392b0; font-size:12px; text-align:center; }
+    .focus-footer { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:11px; color:#8291ad; font-size:11px; }
+    .focus-footer button { padding:6px 9px; font-size:11px; }
+    .focus-footer button:disabled { opacity:.35; cursor:default; }
+    @keyframes focus-in { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
+    @media (min-width:900px) {
+      main {
+        grid-template-areas:
+          "topbar topbar"
+          "welcome welcome"
+          "intro intro"
+          "search search"
+          "empty empty"
+          "hero noteshead"
+          "quickhead notes"
+          "apps notes"
+          "focus notes";
+      }
+      .focus-panel { grid-area:focus; margin-top:-6px; }
+    }
+    @media (max-width:560px) {
+      .focus-panel { padding:16px; }
+      .focus-add { gap:7px; }
+      .focus-add button { padding-left:11px; padding-right:11px; }
+    }
+
     @media (prefers-reduced-motion:reduce) {
       *,*:before,*:after { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
       body:before { transform:none; }
@@ -286,6 +338,23 @@
       <a class="app-card" href="https://www.roblox.com/share?code=a58f9da28a522a4bbdbb10fb11491fc7&amp;type=Profile&amp;source=ProfileShare&amp;stamp=1794385791183"><span class="app-icon">◆</span><span class="app-bottom">Roblox <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://github.com/"><span class="app-icon">⌘</span><span class="app-bottom">GitHub <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://www.callofduty.com/mobile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty <span class="app-arrow">↗</span></span></a>
+    </section>
+    <section class="focus-panel" id="focusList" aria-labelledby="focusTitle">
+      <div class="focus-heading">
+        <h2 id="focusTitle">Focus list <span class="accent">✦</span></h2>
+        <span class="focus-count" id="focusCount">0 tasks</span>
+      </div>
+      <div class="focus-progress" role="progressbar" aria-label="Focus tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="focusProgress"><span id="focusProgressBar"></span></div>
+      <form class="focus-add" id="focusForm">
+        <input id="focusInput" type="text" maxlength="90" placeholder="What's your next task?" aria-label="New focus task" autocomplete="off">
+        <button type="submit">＋ Add</button>
+      </form>
+      <ul class="focus-list" id="focusTasks"></ul>
+      <p class="focus-empty" id="focusEmpty">Nothing on your list yet. Add one small goal ✨</p>
+      <div class="focus-footer">
+        <span id="focusHint">Saved on this device</span>
+        <button class="secondary" id="clearDone" type="button" disabled>Clear completed</button>
+      </div>
     </section>
     <div class="section-head">
       <h2>Quick notes <span class="accent">✎</span></h2>
@@ -442,6 +511,98 @@
         appSearch.blur();
       }
     });
+
+    // Focus List: task text is rendered safely and stored only in this browser.
+    (() => {
+      const KEY = "nicoos-focus-tasks-v1";
+      const form = document.getElementById("focusForm");
+      const input = document.getElementById("focusInput");
+      const list = document.getElementById("focusTasks");
+      const empty = document.getElementById("focusEmpty");
+      const count = document.getElementById("focusCount");
+      const progress = document.getElementById("focusProgress");
+      const progressBar = document.getElementById("focusProgressBar");
+      const clearDone = document.getElementById("clearDone");
+      let tasks = [];
+      try {
+        const stored = JSON.parse(localStorage.getItem(KEY) || "[]");
+        if (Array.isArray(stored)) tasks = stored.filter(t =>
+          t && typeof t.id === "string" && typeof t.text === "string" && typeof t.done === "boolean"
+        ).slice(0, 100);
+      } catch (_) { tasks = []; }
+
+      function save() {
+        try {
+          localStorage.setItem(KEY, JSON.stringify(tasks));
+          document.getElementById("focusHint").textContent = "Saved on this device";
+        } catch (_) {
+          document.getElementById("focusHint").textContent = "Storage is full — remove some tasks";
+        }
+      }
+      function render() {
+        list.replaceChildren();
+        const completed = tasks.filter(t => t.done).length;
+        const percent = tasks.length ? Math.round(completed / tasks.length * 100) : 0;
+        count.textContent = tasks.length + (tasks.length === 1 ? " task" : " tasks");
+        progressBar.style.width = percent + "%";
+        progress.setAttribute("aria-valuenow", String(percent));
+        empty.hidden = tasks.length > 0;
+        clearDone.disabled = completed === 0;
+        tasks.forEach(task => {
+          const item = document.createElement("li");
+          item.className = "focus-task" + (task.done ? " done" : "");
+          const toggle = document.createElement("button");
+          toggle.type = "button";
+          toggle.className = "focus-toggle";
+          toggle.dataset.action = "toggle";
+          toggle.dataset.id = task.id;
+          toggle.setAttribute("aria-label", task.done ? "Mark task as not done" : "Mark task as done");
+          toggle.setAttribute("aria-pressed", String(task.done));
+          toggle.textContent = task.done ? "✓" : "";
+          const label = document.createElement("span");
+          label.textContent = task.text;
+          const remove = document.createElement("button");
+          remove.type = "button";
+          remove.className = "focus-delete";
+          remove.dataset.action = "delete";
+          remove.dataset.id = task.id;
+          remove.setAttribute("aria-label", "Delete task");
+          remove.textContent = "×";
+          item.append(toggle, label, remove);
+          list.append(item);
+        });
+      }
+      form.addEventListener("submit", event => {
+        event.preventDefault();
+        const value = input.value.trim();
+        if (!value) { input.focus(); return; }
+        if (tasks.filter(t => !t.done).length >= 12) {
+          document.getElementById("focusHint").textContent = "Finish or clear a task before adding more";
+          return;
+        }
+        tasks.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), text: value, done: false });
+        input.value = "";
+        save();
+        render();
+        input.focus();
+      });
+      list.addEventListener("click", event => {
+        const button = event.target.closest("button[data-action]");
+        if (!button) return;
+        const task = tasks.find(t => t.id === button.dataset.id);
+        if (!task) return;
+        if (button.dataset.action === "toggle") task.done = !task.done;
+        if (button.dataset.action === "delete") tasks = tasks.filter(t => t.id !== task.id);
+        save();
+        render();
+      });
+      clearDone.addEventListener("click", () => {
+        tasks = tasks.filter(t => !t.done);
+        save();
+        render();
+      });
+      render();
+    })();
 
     // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
     const notes = document.getElementById("notes");
