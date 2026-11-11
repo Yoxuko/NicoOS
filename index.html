@@ -185,14 +185,16 @@
         const salt = crypto.getRandomValues(new Uint8Array(16));
         const key = await deriveKey(pin, salt);
         const iv = crypto.getRandomValues(new Uint8Array(12));
+        const initialNotes = localStorage.getItem("nicoos-notes") || "";
         const encrypted = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv }, key, new TextEncoder().encode("")
+          { name: "AES-GCM", iv }, key, new TextEncoder().encode(initialNotes)
         );
         localStorage.setItem(STORAGE_KEY, JSON.stringify({
           salt: bytesToBase64(salt), iv: bytesToBase64(iv), data: bytesToBase64(encrypted)
         }));
+        localStorage.removeItem("nicoos-notes");
         window.__nicoNotesPin = pin;
-        notes.value = "";
+        notes.value = initialNotes;
         showNotesState("unlocked");
       } catch (error) {
         setupStatus.textContent = "Could not set up encryption in this browser.";
