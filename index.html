@@ -299,6 +299,25 @@
       .focus-add button { padding-left:11px; padding-right:11px; }
     }
 
+
+    /* Focus timer: a lightweight Pomodoro companion, no external libraries. */
+    .timer-panel { position:relative; overflow:hidden; padding:20px; margin-top:18px; border:1px solid rgba(164,190,238,.2); border-radius:22px; background:radial-gradient(ellipse at 90% 0%,rgba(91,155,190,.14),transparent 48%),linear-gradient(145deg,rgba(25,43,66,.76),rgba(11,21,37,.84)); box-shadow:0 14px 36px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.12); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); }
+    .timer-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
+    .timer-head h2 { font-size:17px; }
+    .timer-mode { color:#9db1d5; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
+    .timer-display { display:grid; place-items:center; width:166px; height:166px; margin:18px auto; border-radius:50%; background:conic-gradient(from -90deg,#8ca7ff var(--timer-progress,0%),rgba(255,255,255,.07) 0); box-shadow:0 0 34px rgba(110,151,226,.11); transition:background .25s ease; }
+    .timer-inner { display:grid; place-content:center; width:148px; height:148px; border:1px solid rgba(191,210,255,.14); border-radius:50%; background:radial-gradient(circle at 35% 20%,rgba(84,112,168,.3),rgba(10,19,34,.97) 70%); text-align:center; }
+    .timer-clock { font-size:38px; font-weight:760; letter-spacing:-1.8px; font-variant-numeric:tabular-nums; }
+    .timer-caption { margin-top:3px; color:#8f9fbe; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; }
+    .timer-controls { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
+    .timer-controls button { min-width:88px; padding:9px 13px; font-size:12px; }
+    .timer-modes { display:flex; justify-content:center; gap:7px; margin-top:13px; }
+    .timer-modes button { padding:7px 10px; border-radius:999px; font-size:11px; background:rgba(255,255,255,.035); border-color:rgba(157,178,230,.14); color:#aab8d5; }
+    .timer-modes button[aria-pressed="true"] { color:#eef2ff; border-color:rgba(157,184,255,.42); background:rgba(128,153,226,.17); }
+    .timer-note { margin:12px 0 0; color:#8191af; font-size:11px; text-align:center; }
+    @media (min-width:900px) { main { grid-template-areas:"topbar topbar" "welcome welcome" "intro intro" "search search" "empty empty" "hero noteshead" "quickhead notes" "apps notes" "focus notes" "timer notes"; } .timer-panel { grid-area:timer; } }
+    @media (max-width:560px) { .timer-panel { padding:17px; } }
+
     @media (prefers-reduced-motion:reduce) {
       *,*:before,*:after { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
       body:before { transform:none; }
@@ -355,6 +374,27 @@
         <span id="focusHint">Saved on this device</span>
         <button class="secondary" id="clearDone" type="button" disabled>Clear completed</button>
       </div>
+    </section>
+    <section class="timer-panel" id="focusTimer" aria-labelledby="timerTitle">
+      <div class="timer-head">
+        <h2 id="timerTitle">Focus timer <span class="accent">◷</span></h2>
+        <span class="timer-mode" id="timerModeLabel">Focus session</span>
+      </div>
+      <div class="timer-display" id="timerRing" role="timer" aria-label="25 minutes remaining">
+        <div class="timer-inner">
+          <div class="timer-clock" id="timerClock">25:00</div>
+          <div class="timer-caption" id="timerCaption">Ready when you are</div>
+        </div>
+      </div>
+      <div class="timer-controls">
+        <button id="timerStart" type="button">▶ Start</button>
+        <button id="timerReset" class="secondary" type="button">↺ Reset</button>
+      </div>
+      <div class="timer-modes" aria-label="Timer mode">
+        <button type="button" data-minutes="25" data-mode="Focus" aria-pressed="true">Focus · 25m</button>
+        <button type="button" data-minutes="5" data-mode="Short break" aria-pressed="false">Break · 5m</button>
+      </div>
+      <p class="timer-note" id="timerHint" aria-live="polite">A little progress, one session at a time.</p>
     </section>
     <div class="section-head">
       <h2>Quick notes <span class="accent">✎</span></h2>
@@ -601,6 +641,65 @@
         save();
         render();
       });
+      render();
+    })();
+
+    // Focus timer: deadline-based countdown stays accurate after tab switching.
+    (() => {
+      const clock = document.getElementById("timerClock");
+      const ring = document.getElementById("timerRing");
+      const caption = document.getElementById("timerCaption");
+      const modeLabel = document.getElementById("timerModeLabel");
+      const hint = document.getElementById("timerHint");
+      const startButton = document.getElementById("timerStart");
+      const resetButton = document.getElementById("timerReset");
+      const modeButtons = Array.from(document.querySelectorAll(".timer-modes button"));
+      let duration = 25 * 60, remaining = duration, deadline = 0, interval = null, running = false, mode = "Focus";
+      function format(seconds) {
+        return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
+      }
+      function render() {
+        clock.textContent = format(remaining);
+        ring.style.setProperty("--timer-progress", ((duration - remaining) / duration * 100) + "%");
+        ring.setAttribute("aria-label", format(remaining) + " remaining");
+        caption.textContent = running ? "Stay in the zone" : (remaining === 0 ? "Session complete" : "Ready when you are");
+        startButton.textContent = running ? "Ⅱ Pause" : (remaining === 0 ? "↻ Restart" : "▶ Start");
+        modeLabel.textContent = mode === "Focus" ? "Focus session" : "Short break";
+      }
+      function stopInterval() { if (interval !== null) window.clearInterval(interval); interval = null; }
+      function tick() {
+        remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+        if (remaining <= 0) {
+          remaining = 0; running = false; stopInterval();
+          hint.textContent = mode === "Focus" ? "Nice work. Time for a short break ☕" : "Break complete. Ready for another focus session?";
+        }
+        render();
+      }
+      function start() {
+        if (running) return;
+        if (remaining <= 0) remaining = duration;
+        deadline = Date.now() + remaining * 1000;
+        running = true;
+        hint.textContent = mode === "Focus" ? "One task. One session. You've got this." : "Take a breath and recharge.";
+        stopInterval(); tick(); interval = window.setInterval(tick, 250); render();
+      }
+      function pause() {
+        if (!running) return;
+        remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+        running = false; stopInterval(); hint.textContent = "Paused. Pick it up whenever you're ready."; render();
+      }
+      function reset() {
+        running = false; stopInterval(); remaining = duration;
+        hint.textContent = "Timer reset. Ready when you are."; render();
+      }
+      startButton.addEventListener("click", () => running ? pause() : start());
+      resetButton.addEventListener("click", reset);
+      modeButtons.forEach(button => button.addEventListener("click", () => {
+        mode = button.dataset.mode; duration = Number(button.dataset.minutes) * 60;
+        modeButtons.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
+        reset();
+      }));
+      document.addEventListener("visibilitychange", () => { if (running && !document.hidden) tick(); });
       render();
     })();
 
