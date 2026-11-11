@@ -173,7 +173,7 @@
     document.getElementById("savePin").addEventListener("click", async () => {
       const pin = document.getElementById("newPin").value;
       const confirm = document.getElementById("confirmPin").value;
-      if (!/^\\d{6}$/.test(pin)) {
+      if (!/^\d{6}$/.test(pin)) {
         setupStatus.textContent = "Please enter exactly 6 digits.";
         return;
       }
@@ -201,7 +201,7 @@
 
     document.getElementById("unlockButton").addEventListener("click", async () => {
       const pin = document.getElementById("unlockPin").value;
-      if (!/^\\d{6}$/.test(pin)) {
+      if (!/^\d{6}$/.test(pin)) {
         unlockStatus.textContent = "Enter your 6-digit PIN.";
         return;
       }
