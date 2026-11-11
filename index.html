@@ -394,7 +394,7 @@
         <button type="button" data-minutes="25" data-mode="Focus" aria-pressed="true">Focus · 25m</button>
         <button type="button" data-minutes="5" data-mode="Short break" aria-pressed="false">Break · 5m</button>
       </div>
-      <p class="timer-note" id="timerHint" aria-live="polite">A little progress, one session at a time.</p>
+      <p class="timer-note" id="timerHint" aria-live="polite">Your timer is remembered on this device.</p>
     </section>
     <div class="section-head">
       <h2>Quick notes <span class="accent">✎</span></h2>
@@ -644,8 +644,10 @@
       render();
     })();
 
-    // Focus timer: deadline-based countdown stays accurate after tab switching.
+    // Focus timer: deadline-based countdown survives tab switching and page reloads.
     (() => {
+      const STORAGE_KEY = "nicoos-focus-timer-v1";
+      const MODES = { Focus: 25 * 60, "Short break": 5 * 60 };
       const clock = document.getElementById("timerClock");
       const ring = document.getElementById("timerRing");
       const caption = document.getElementById("timerCaption");
@@ -654,7 +656,40 @@
       const startButton = document.getElementById("timerStart");
       const resetButton = document.getElementById("timerReset");
       const modeButtons = Array.from(document.querySelectorAll(".timer-modes button"));
-      let duration = 25 * 60, remaining = duration, deadline = 0, interval = null, running = false, mode = "Focus";
+      let duration = MODES.Focus, remaining = duration, deadline = 0, interval = null, running = false, mode = "Focus";
+
+      function saveState() {
+        try {
+          localStorage.setItem(STORAGE_KEY, JSON.stringify({ mode, remaining, deadline, running }));
+        } catch (_) {}
+      }
+      function restoreState() {
+        try {
+          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
+          if (!saved || !Object.prototype.hasOwnProperty.call(MODES, saved.mode) || typeof saved.running !== "boolean") return;
+          const savedRemaining = Number(saved.remaining);
+          if (!Number.isInteger(savedRemaining) || savedRemaining < 0 || savedRemaining > MODES[saved.mode]) return;
+          mode = saved.mode;
+          duration = MODES[mode];
+          remaining = savedRemaining;
+          deadline = Number(saved.deadline);
+          running = saved.running && Number.isFinite(deadline) && deadline > 0;
+          if (running) {
+            remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
+            if (remaining === 0) {
+              running = false;
+              deadline = 0;
+              hint.textContent = mode === "Focus" ? "Nice work. Time for a short break ☕" : "Break complete. Ready for another focus session?";
+              saveState();
+            } else {
+              hint.textContent = "Session resumed after reopening NicoOS.";
+            }
+          } else {
+            deadline = 0;
+          }
+          modeButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
+        } catch (_) {}
+      }
       function format(seconds) {
         return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
       }
@@ -666,12 +701,19 @@
         startButton.textContent = running ? "Ⅱ Pause" : (remaining === 0 ? "↻ Restart" : "▶ Start");
         modeLabel.textContent = mode === "Focus" ? "Focus session" : "Short break";
       }
-      function stopInterval() { if (interval !== null) window.clearInterval(interval); interval = null; }
+      function stopInterval() {
+        if (interval !== null) window.clearInterval(interval);
+        interval = null;
+      }
       function tick() {
         remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
         if (remaining <= 0) {
-          remaining = 0; running = false; stopInterval();
+          remaining = 0;
+          running = false;
+          deadline = 0;
+          stopInterval();
           hint.textContent = mode === "Focus" ? "Nice work. Time for a short break ☕" : "Break complete. Ready for another focus session?";
+          saveState();
         }
         render();
       }
@@ -681,26 +723,45 @@
         deadline = Date.now() + remaining * 1000;
         running = true;
         hint.textContent = mode === "Focus" ? "One task. One session. You've got this." : "Take a breath and recharge.";
-        stopInterval(); tick(); interval = window.setInterval(tick, 250); render();
+        stopInterval();
+        saveState();
+        tick();
+        if (running) interval = window.setInterval(tick, 250);
       }
       function pause() {
         if (!running) return;
         remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-        running = false; stopInterval(); hint.textContent = "Paused. Pick it up whenever you're ready."; render();
+        running = false;
+        deadline = 0;
+        stopInterval();
+        hint.textContent = "Paused. Pick it up whenever you're ready.";
+        saveState();
+        render();
       }
       function reset() {
-        running = false; stopInterval(); remaining = duration;
-        hint.textContent = "Timer reset. Ready when you are."; render();
+        running = false;
+        deadline = 0;
+        stopInterval();
+        remaining = duration;
+        hint.textContent = "Timer reset. Ready when you are.";
+        saveState();
+        render();
       }
       startButton.addEventListener("click", () => running ? pause() : start());
       resetButton.addEventListener("click", reset);
       modeButtons.forEach(button => button.addEventListener("click", () => {
-        mode = button.dataset.mode; duration = Number(button.dataset.minutes) * 60;
+        mode = button.dataset.mode;
+        duration = MODES[mode];
         modeButtons.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
         reset();
       }));
       document.addEventListener("visibilitychange", () => { if (running && !document.hidden) tick(); });
+      restoreState();
       render();
+      if (running) {
+        tick();
+        if (running) interval = window.setInterval(tick, 250);
+      }
     })();
 
     // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
