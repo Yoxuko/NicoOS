@@ -157,6 +157,33 @@
       body { padding-left:24px; padding-right:24px; }
       main { column-gap:20px; grid-template-columns:minmax(0,1fr) minmax(300px,.85fr); }
     }
+    /* Short mobile landscape screens: keep the page naturally scrollable. */
+    @media (orientation:landscape) and (max-height:560px) and (max-width:899px) {
+      html { min-height:100%; overflow-y:auto; }
+      body {
+        min-height:100svh;
+        height:auto;
+        overflow-x:hidden;
+        overflow-y:auto;
+        touch-action:pan-y;
+        padding:12px 22px 32px;
+      }
+      main { width:min(100%,900px); }
+      .topbar { margin:0 2px 16px; }
+      .brand-mark { width:32px; height:32px; }
+      h1 { font-size:clamp(30px,5vw,42px); }
+      .intro { margin:7px 0 15px; }
+      .search-wrap { margin-bottom:16px; }
+      .hero { padding:16px 20px; margin-bottom:20px; }
+      #time { font-size:clamp(38px,8vw,54px); }
+      #date { margin-top:5px; }
+      .section-head { margin-bottom:10px; }
+      .apps { grid-template-columns:repeat(3,minmax(0,1fr)); gap:10px; margin-bottom:22px; }
+      .app-card { min-height:88px; padding:12px; gap:9px; }
+      .app-icon { width:33px; height:33px; }
+      .notes-panel { padding:16px; }
+      textarea { min-height:110px; }
+    }
     @media (max-width:560px) {
       body:before { inset:-12%; filter:blur(28px) saturate(115%); animation-duration:38s; }
       body:after { background-size:68px 68px; opacity:.11; }
