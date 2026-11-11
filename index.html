@@ -120,6 +120,43 @@
     .app-card[hidden] { display:none; }
     @media (max-width:560px) { .search-wrap { margin-bottom:25px; } }
 
+    /* Wide-screen dashboard layout: balanced two-column desktop workspace. */
+    @media (min-width:900px) {
+      body { padding:34px 36px 56px; }
+      main {
+        width:min(100%,1180px);
+        display:grid;
+        grid-template-columns:minmax(0,1.12fr) minmax(340px,.88fr);
+        grid-template-areas:
+          "topbar topbar"
+          "welcome welcome"
+          "intro intro"
+          "search search"
+          "empty empty"
+          "hero noteshead"
+          "quickhead notes"
+          "apps notes";
+        column-gap:28px;
+        align-items:start;
+      }
+      .topbar { grid-area:topbar; margin-bottom:34px; }
+      main > h1 { grid-area:welcome; }
+      .intro { grid-area:intro; }
+      .search-wrap { grid-area:search; }
+      .search-empty { grid-area:empty; }
+      .hero { grid-area:hero; min-height:190px; margin-bottom:26px; display:flex; flex-direction:column; justify-content:center; }
+      main > .section-head:nth-of-type(1) { grid-area:quickhead; }
+      .apps { grid-area:apps; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
+      main > .section-head:nth-of-type(2) { grid-area:noteshead; align-self:end; }
+      .notes-panel { grid-area:notes; width:100%; }
+      #time { font-size:clamp(54px,6vw,76px); }
+      .app-card { min-height:124px; padding:18px; }
+      .notes-panel { padding:24px; }
+    }
+    @media (min-width:900px) and (max-width:1080px) {
+      body { padding-left:24px; padding-right:24px; }
+      main { column-gap:20px; grid-template-columns:minmax(0,1fr) minmax(300px,.85fr); }
+    }
     @media (max-width:560px) {
       body:before { inset:-12%; filter:blur(28px) saturate(115%); animation-duration:38s; }
       body:after { background-size:68px 68px; opacity:.11; }
