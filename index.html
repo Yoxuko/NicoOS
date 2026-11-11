@@ -331,7 +331,8 @@
         particles = Array.from({ length: count }, () => ({
           x: Math.random() * width, y: Math.random() * height,
           vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22,
-          r: Math.random() * 1.35 + .45, a: Math.random() * .34 + .16
+          r: Math.random() * 1.35 + .45, a: Math.random() * .34 + .16,
+          phase: Math.random() * Math.PI * 2, tint: Math.random()
         }));
       }
       function resize() {
@@ -358,7 +359,9 @@
           }
           ctx.beginPath();
           ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          ctx.fillStyle = "rgba(190,207,255," + p.a + ")";
+          const shimmer = reduceMotion.matches ? 1 : .72 + Math.sin(performance.now() * .0012 + p.phase) * .28;
+          const tint = p.tint > .72 ? "143,220,235" : (p.tint > .38 ? "190,207,255" : "169,181,255");
+          ctx.fillStyle = "rgba(" + tint + "," + (p.a * shimmer) + ")";
           ctx.fill();
           for (let j = i + 1; j < particles.length; j++) {
             const q = particles[j], dx = p.x - q.x, dy = p.y - q.y;
