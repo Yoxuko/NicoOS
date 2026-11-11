@@ -129,6 +129,7 @@
       </div>
       <div id="notesArea" hidden>
         <textarea id="notes" placeholder="Write your ideas here..."></textarea>
+        <p class="notes-foot" id="saveStatus" role="status" aria-live="polite">Your notes are stored securely on this device.</p>
         <div class="note-actions"><button class="secondary" id="lockNotes">🔒 Lock now</button></div>
         <p class="notes-foot">Encrypted and saved in this browser on this device.</p>
       </div>
@@ -151,6 +152,7 @@
     const notesArea = document.getElementById("notesArea");
     const setupStatus = document.getElementById("setupStatus");
     const unlockStatus = document.getElementById("unlockStatus");
+    const saveStatus = document.getElementById("saveStatus");
     const STORAGE_KEY = "nicoos-notes-encrypted-v1";
     let saveTimer;
 
@@ -268,11 +270,14 @@
 
     notes.addEventListener("input", () => {
       clearTimeout(saveTimer);
+      saveStatus.textContent = "Unsaved changes…";
       saveTimer = setTimeout(() => {
-        encryptAndSave().catch(() => {
-          unlockStatus.textContent = "Could not save encrypted notes. Check your browser storage.";
+        encryptAndSave().then(() => {
+          saveStatus.textContent = "✓ Saved securely on this device";
+        }).catch(() => {
+          saveStatus.textContent = "Couldn't save. Check your browser storage.";
         });
-      }, 350);
+      }, 500);
     });
 
     // Save the latest edits before leaving the page, then require the PIN next visit.
