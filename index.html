@@ -322,6 +322,59 @@
       *,*:before,*:after { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
       body:before { transform:none; }
     }
+
+    /* CODM profile: compact red-and-gold glass showcase, responsive on phones. */
+    .codm-section { position:relative; overflow:hidden; margin:0 0 28px; padding:20px; border:1px solid rgba(255,115,105,.23); border-radius:23px; background:radial-gradient(ellipse at 8% 0%,rgba(207,48,55,.2),transparent 42%),radial-gradient(ellipse at 95% 10%,rgba(255,190,77,.12),transparent 38%),linear-gradient(145deg,rgba(43,25,39,.82),rgba(13,18,31,.88)); box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.1); -webkit-backdrop-filter:blur(20px) saturate(145%); backdrop-filter:blur(20px) saturate(145%); }
+    .codm-section:before { content:""; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,196,112,.55),rgba(255,95,95,.3),transparent); }
+    .codm-head { position:relative; display:flex; justify-content:space-between; align-items:center; gap:12px; margin-bottom:16px; }
+    .codm-kicker { color:#ffbf8c; font-size:10px; font-weight:800; letter-spacing:1.7px; text-transform:uppercase; }
+    .codm-title { margin:4px 0 0; font-size:clamp(21px,4vw,27px); letter-spacing:-.8px; }
+    .codm-status { padding:7px 10px; border:1px solid rgba(255,193,104,.25); border-radius:999px; color:#ffd38c; background:rgba(255,166,69,.08); font-size:10px; font-weight:750; white-space:nowrap; }
+    .codm-profile { display:grid; grid-template-columns:76px minmax(0,1fr); gap:14px; align-items:center; padding:15px; border:1px solid rgba(255,255,255,.1); border-radius:18px; background:linear-gradient(120deg,rgba(255,255,255,.065),rgba(255,255,255,.018)); }
+    .codm-avatar { display:grid; place-items:center; width:76px; aspect-ratio:1; border:1px solid rgba(255,184,100,.55); border-radius:20px; background:radial-gradient(circle at 35% 25%,rgba(255,191,112,.32),transparent 58%),linear-gradient(145deg,#542b37,#1a1a2a); color:#ffe0b0; font-size:28px; font-weight:850; box-shadow:0 0 24px rgba(245,93,72,.13),inset 0 1px rgba(255,255,255,.15); }
+    .codm-playerline { display:flex; align-items:center; flex-wrap:wrap; gap:8px; }
+    .codm-ign { font-size:17px; font-weight:800; }
+    .codm-pending { color:#aeb8cf; font-size:11px; }
+    .codm-meta { display:flex; flex-wrap:wrap; gap:7px; margin-top:8px; }
+    .codm-chip { padding:6px 8px; border:1px solid rgba(255,255,255,.1); border-radius:9px; color:#e1e7f6; background:rgba(255,255,255,.04); font-size:11px; }
+    .codm-chip strong { color:#ffd08a; }
+    .codm-uidrow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:11px; color:#aebbd2; font-size:11px; }
+    .codm-uid { font-variant-numeric:tabular-nums; overflow-wrap:anywhere; color:#dfe6f8; }
+    .codm-copy { padding:6px 9px; border-radius:9px; border-color:rgba(255,190,110,.25); background:rgba(255,174,80,.09); color:#ffd69a; font-size:10px; }
+    .codm-loadout-head { display:flex; justify-content:space-between; align-items:end; gap:10px; margin:20px 1px 11px; }
+    .codm-loadout-head h3 { margin:0; font-size:16px; }
+    .codm-loadout-head span { color:#aeb8cf; font-size:10px; }
+    .codm-loadouts { display:grid; grid-template-columns:repeat(2,minmax(0,1fr)); gap:11px; }
+    .codm-build { min-width:0; padding:14px; border:1px solid rgba(255,130,108,.19); border-radius:17px; background:linear-gradient(145deg,rgba(95,35,40,.31),rgba(13,21,34,.68)); box-shadow:inset 0 1px rgba(255,255,255,.07); }
+    .codm-build.br { border-color:rgba(255,190,100,.24); background:linear-gradient(145deg,rgba(105,70,34,.25),rgba(13,21,34,.68)); }
+    .codm-buildtop { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-bottom:9px; }
+    .codm-mode { color:#ffb7a2; font-size:10px; font-weight:850; letter-spacing:1.2px; }
+    .codm-build.br .codm-mode { color:#ffd18b; }
+    .codm-diamond { color:#ffcf7d; font-size:10px; font-weight:800; }
+    .codm-weapon { margin:0 0 4px; font-size:15px; font-weight:800; }
+    .codm-skin { color:#b4bfd4; font-size:10px; }
+    .codm-weapon-art { position:relative; height:58px; display:flex; align-items:center; justify-content:center; overflow:hidden; margin:12px 0; border-radius:12px; background:radial-gradient(ellipse at 50% 50%,rgba(255,90,77,.23),transparent 62%),linear-gradient(100deg,transparent,rgba(255,255,255,.055),transparent); }
+    .codm-weapon-art:before { content:""; width:76%; height:8px; border-radius:3px; background:linear-gradient(90deg,#7d1e2b,#e54b43 34%,#ffcf7a 53%,#a92a32 70%,#3a1d28); box-shadow:0 0 13px rgba(255,73,67,.35); transform:skewX(-17deg); }
+    .codm-weapon-art:after { content:""; position:absolute; width:18%; height:17px; left:21%; top:31px; border-left:4px solid #b93138; border-bottom:4px solid #b93138; transform:skewX(-28deg); opacity:.9; }
+    .codm-build.br .codm-weapon-art { background:radial-gradient(ellipse at 50% 50%,rgba(255,181,79,.2),transparent 62%),linear-gradient(100deg,transparent,rgba(255,255,255,.055),transparent); }
+    .codm-build.br .codm-weapon-art:before { background:linear-gradient(90deg,#4d5364,#b6bec8 32%,#ffce75 52%,#6f7785 73%,#292e3b); box-shadow:0 0 13px rgba(255,181,79,.3); }
+    .codm-build.br .codm-weapon-art:after { border-color:#bd8a4b; }
+    .codm-attachments { display:grid; gap:6px; margin:0; padding:0; list-style:none; }
+    .codm-attachments li { display:flex; justify-content:space-between; align-items:flex-start; gap:8px; padding-top:6px; border-top:1px solid rgba(255,255,255,.065); color:#dbe2f1; font-size:10px; line-height:1.35; }
+    .codm-attachments li span:first-child { color:#91a0ba; }
+    .codm-attachments li strong { text-align:right; font-weight:650; }
+    .codm-footer { margin:13px 2px 0; color:#9aa8c1; font-size:10px; line-height:1.5; }
+    @media (min-width:900px) { .codm-section { grid-column:1/-1; } }
+    @media (max-width:560px) {
+      .codm-section { padding:16px; border-radius:20px; }
+      .codm-profile { grid-template-columns:58px minmax(0,1fr); gap:11px; padding:12px; }
+      .codm-avatar { width:58px; border-radius:16px; font-size:23px; }
+      .codm-loadouts { grid-template-columns:1fr; }
+      .codm-build { padding:13px; }
+      .codm-weapon-art { height:48px; }
+      .codm-weapon-art:after { top:27px; }
+    }
+
   </style>
 </head>
 <body>
@@ -358,6 +411,50 @@
       <a class="app-card" href="https://github.com/"><span class="app-icon">⌘</span><span class="app-bottom">GitHub <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://www.callofduty.com/mobile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty <span class="app-arrow">↗</span></span></a>
     </section>
+
+    <section class="codm-section" id="codmProfile" aria-labelledby="codmTitle">
+      <div class="codm-head">
+        <div><div class="codm-kicker">Operator dossier · Call of Duty Mobile</div><h2 class="codm-title" id="codmTitle">My <span style="color:#ff9b80">CODM</span> profile</h2></div>
+        <span class="codm-status">✦ TIER 450</span>
+      </div>
+      <div class="codm-profile">
+        <div class="codm-avatar" aria-label="Avatar image pending">N</div>
+        <div>
+          <div class="codm-playerline"><span class="codm-ign">IGN</span><span class="codm-pending">Not visible in the supplied screenshot</span></div>
+          <div class="codm-meta"><span class="codm-chip">Squad <strong>USELESS SQUAD</strong></span><span class="codm-chip"><strong>3,464</strong> likes</span></div>
+          <div class="codm-uidrow"><span>UID</span><strong class="codm-uid">7247073684504969217</strong><button class="codm-copy" id="copyCodmUid" type="button">Copy UID</button></div>
+        </div>
+      </div>
+      <div class="codm-loadout-head"><h3>KRM-262 · Glorious Blaze</h3><span>Two saved builds</span></div>
+      <div class="codm-loadouts">
+        <article class="codm-build">
+          <div class="codm-buildtop"><span class="codm-mode">MP BUILD</span><span class="codm-diamond">◆ DIAMOND</span></div>
+          <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Glorious Blaze · Build 01</div>
+          <div class="codm-weapon-art" aria-hidden="true"></div>
+          <ul class="codm-attachments">
+            <li><span>Muzzle</span><strong>Marauder Suppressor</strong></li>
+            <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
+            <li><span>Stock</span><strong>No Stock</strong></li>
+            <li><span>Perk</span><strong>Speed Up Kill</strong></li>
+            <li><span>Laser</span><strong>RTC Laser 1mW</strong></li>
+          </ul>
+        </article>
+        <article class="codm-build br">
+          <div class="codm-buildtop"><span class="codm-mode">BR BUILD</span><span class="codm-diamond">◆ DIAMOND</span></div>
+          <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Glorious Blaze · Build 02</div>
+          <div class="codm-weapon-art" aria-hidden="true"></div>
+          <ul class="codm-attachments">
+            <li><span>Muzzle</span><strong>Choke</strong></li>
+            <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
+            <li><span>Stock</span><strong>MIP Stalker Stock</strong></li>
+            <li><span>Laser</span><strong>MIP Laser 5mW</strong></li>
+            <li><span>Rear Grip</span><strong>Granulated Grip Tape</strong></li>
+          </ul>
+        </article>
+      </div>
+      <p class="codm-footer">Profile avatar and IGN can be added when you send a clearer profile crop. Rank badges and other favorite guns are intentionally left out until confirmed.</p>
+    </section>
+
     <section class="focus-panel" id="focusList" aria-labelledby="focusTitle">
       <div class="focus-heading">
         <h2 id="focusTitle">Focus list <span class="accent">✦</span></h2>
@@ -763,6 +860,18 @@
         if (running) interval = window.setInterval(tick, 250);
       }
     })();
+
+
+    document.getElementById("copyCodmUid").addEventListener("click", async () => {
+      const button = document.getElementById("copyCodmUid");
+      try {
+        await navigator.clipboard.writeText("7247073684504969217");
+        button.textContent = "Copied ✓";
+      } catch (_) {
+        button.textContent = "Copy unavailable";
+      }
+      window.setTimeout(() => { button.textContent = "Copy UID"; }, 1800);
+    });
 
     // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
     const notes = document.getElementById("notes");
