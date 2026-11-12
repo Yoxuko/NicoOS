@@ -346,8 +346,8 @@
 
     /* CODM is a dedicated in-dashboard page, opened from its quick-launch tile. */
     #codmProfile { display:none; }
-    body.codm-open main > :not(.topbar):not(#codmProfile) { display:none !important; }
-    body.codm-open #codmProfile { display:block; }
+    #codmProfile:target { display:block; }
+    main:has(#codmProfile:target) > :not(.topbar):not(#codmProfile) { display:none !important; }
     .codm-pagebar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 15px; }
     .codm-back { display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border:1px solid rgba(255,255,255,.14); border-radius:12px; color:#e8edff; background:rgba(255,255,255,.055); font:inherit; font-size:12px; cursor:pointer; }
     .codm-back:active { transform:scale(.98); }
@@ -412,7 +412,7 @@
 </head>
 <body>
   <canvas id="particleCanvas" aria-hidden="true"></canvas>
-  <main>
+  <main id="dashboard">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">✦</span> Nico<span class="accent">OS</span></div>
       <span class="top-tag">PERSONAL DASHBOARD</span>
@@ -446,7 +446,7 @@
     </section>
 
     <section class="codm-section" id="codmProfile" aria-labelledby="codmTitle">
-      <div class="codm-pagebar"><button class="codm-back" id="codmBack" type="button">← Back to dashboard</button><a class="codm-game-link" href="https://www.callofduty.com/mobile" target="_blank" rel="noopener noreferrer">Official CODM site ↗</a></div>
+      <div class="codm-pagebar"><a class="codm-back" id="codmBack" href="#dashboard">← Back to dashboard</a><a class="codm-game-link" href="https://www.callofduty.com/mobile" target="_blank" rel="noopener noreferrer">Official CODM site ↗</a></div>
       <div class="codm-head">
         <div><div class="codm-kicker">Operator dossier · Call of Duty Mobile</div><h2 class="codm-title" id="codmTitle">My <span style="color:#ff9b80">CODM</span> profile</h2></div>
         <span class="codm-status">✦ TIER 450</span>
@@ -928,22 +928,12 @@
 
 
     // Internal CODM hub navigation: keep the dashboard and profile in one page.
-    const codmAppCard = document.getElementById("codmAppCard");
-    const codmBack = document.getElementById("codmBack");
-    function openCodmPage() {
-      document.body.classList.add("codm-open");
-      history.replaceState(null, "", "#codmProfile");
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    function closeCodmPage() {
-      document.body.classList.remove("codm-open");
-      history.replaceState(null, "", window.location.pathname + window.location.search);
-      window.scrollTo({ top: 0, behavior: "smooth" });
-    }
-    codmAppCard.addEventListener("click", event => { event.preventDefault(); openCodmPage(); });
-    codmBack.addEventListener("click", closeCodmPage);
+    // CODM opens through the native URL fragment, so it still works if another
+    // dashboard script fails. The back link returns to the dashboard anchor.
     window.addEventListener("keydown", event => {
-      if (event.key === "Escape" && document.body.classList.contains("codm-open")) closeCodmPage();
+      if (event.key === "Escape" && window.location.hash === "#codmProfile") {
+        window.location.hash = "dashboard";
+      }
     });
 
     document.getElementById("copyCodmUid").addEventListener("click", async () => {
