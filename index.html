@@ -333,6 +333,19 @@
     .codm-build .codm-screenshot figcaption { color:#ffb9a8; }
     .codm-build.br .codm-screenshot figcaption { color:#ffd18b; }
 
+
+    /* CODM is a dedicated in-dashboard page, opened from its quick-launch tile. */
+    #codmProfile { display:none; }
+    body.codm-open main > :not(.topbar):not(#codmProfile) { display:none !important; }
+    body.codm-open #codmProfile { display:block; }
+    .codm-pagebar { display:flex; align-items:center; justify-content:space-between; gap:12px; margin:0 0 15px; }
+    .codm-back { display:inline-flex; align-items:center; gap:8px; padding:9px 12px; border:1px solid rgba(255,255,255,.14); border-radius:12px; color:#e8edff; background:rgba(255,255,255,.055); font:inherit; font-size:12px; cursor:pointer; }
+    .codm-back:active { transform:scale(.98); }
+    .codm-game-link { color:#ffd08a; font-size:11px; font-weight:750; text-decoration:none; }
+    .codm-game-link:hover { text-decoration:underline; }
+    body.codm-open .topbar { margin-bottom:22px; }
+    @media (max-width:560px) { .codm-pagebar { align-items:flex-start; } }
+
     /* CODM profile: compact red-and-gold glass showcase, responsive on phones. */
     .codm-section { position:relative; overflow:hidden; margin:0 0 28px; padding:20px; border:1px solid rgba(255,115,105,.23); border-radius:23px; background:radial-gradient(ellipse at 8% 0%,rgba(207,48,55,.2),transparent 42%),radial-gradient(ellipse at 95% 10%,rgba(255,190,77,.12),transparent 38%),linear-gradient(145deg,rgba(43,25,39,.82),rgba(13,18,31,.88)); box-shadow:0 18px 48px rgba(0,0,0,.22),inset 0 1px rgba(255,255,255,.1); -webkit-backdrop-filter:blur(20px) saturate(145%); backdrop-filter:blur(20px) saturate(145%); }
     .codm-section:before { content:""; position:absolute; top:0; left:10%; right:10%; height:1px; background:linear-gradient(90deg,transparent,rgba(255,196,112,.55),rgba(255,95,95,.3),transparent); }
@@ -419,10 +432,11 @@
       <a class="app-card" href="https://www.youtube.com/@Yozukeclips"><span class="app-icon">▶</span><span class="app-bottom">YouTube <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://www.roblox.com/share?code=a58f9da28a522a4bbdbb10fb11491fc7&amp;type=Profile&amp;source=ProfileShare&amp;stamp=1794385791183"><span class="app-icon">◆</span><span class="app-bottom">Roblox <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://github.com/"><span class="app-icon">⌘</span><span class="app-bottom">GitHub <span class="app-arrow">↗</span></span></a>
-      <a class="app-card" href="https://www.callofduty.com/mobile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty <span class="app-arrow">↗</span></span></a>
+      <a class="app-card" href="#codmProfile" id="codmAppCard" aria-controls="codmProfile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty Mobile <span class="app-arrow">↗</span></span></a>
     </section>
 
     <section class="codm-section" id="codmProfile" aria-labelledby="codmTitle">
+      <div class="codm-pagebar"><button class="codm-back" id="codmBack" type="button">← Back to dashboard</button><a class="codm-game-link" href="https://www.callofduty.com/mobile" target="_blank" rel="noopener noreferrer">Official CODM site ↗</a></div>
       <div class="codm-head">
         <div><div class="codm-kicker">Operator dossier · Call of Duty Mobile</div><h2 class="codm-title" id="codmTitle">My <span style="color:#ff9b80">CODM</span> profile</h2></div>
         <span class="codm-status">✦ TIER 450</span>
@@ -872,6 +886,26 @@
       }
     })();
 
+
+
+    // Internal CODM hub navigation: keep the dashboard and profile in one page.
+    const codmAppCard = document.getElementById("codmAppCard");
+    const codmBack = document.getElementById("codmBack");
+    function openCodmPage() {
+      document.body.classList.add("codm-open");
+      history.replaceState(null, "", "#codmProfile");
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    function closeCodmPage() {
+      document.body.classList.remove("codm-open");
+      history.replaceState(null, "", window.location.pathname + window.location.search);
+      window.scrollTo({ top: 0, behavior: "smooth" });
+    }
+    codmAppCard.addEventListener("click", event => { event.preventDefault(); openCodmPage(); });
+    codmBack.addEventListener("click", closeCodmPage);
+    window.addEventListener("keydown", event => {
+      if (event.key === "Escape" && document.body.classList.contains("codm-open")) closeCodmPage();
+    });
 
     document.getElementById("copyCodmUid").addEventListener("click", async () => {
       const button = document.getElementById("copyCodmUid");
