@@ -309,6 +309,49 @@
       .codm-weapon-art:after { top:27px; }
     }
 
+  
+    /* CODM screenshots: keep every original image centered and inside its glass card. */
+    #codmProfile .codm-screenshot {
+      display:block;
+      width:100%;
+      max-width:100%;
+      min-width:0;
+      margin:14px 0;
+      overflow:hidden;
+      border:1px solid rgba(255,255,255,.13);
+      border-radius:15px;
+      background:rgba(4,8,16,.5);
+      box-shadow:0 12px 30px rgba(0,0,0,.2);
+    }
+    #codmProfile .codm-screenshot img {
+      display:block;
+      width:100%;
+      max-width:100%;
+      height:auto;
+      margin:0 auto;
+      object-fit:contain;
+      object-position:center;
+      cursor:zoom-in;
+    }
+    #codmProfile .codm-screenshot figcaption {
+      padding:8px 11px;
+      color:#c6d0e5;
+      font-size:11px;
+      line-height:1.45;
+      text-align:center;
+      overflow-wrap:anywhere;
+      background:rgba(255,255,255,.035);
+    }
+    #codmProfile .codm-profile-shot { margin:14px auto 18px; }
+    #codmProfile .codm-build { min-width:0; overflow:hidden; }
+    #codmProfile .codm-build .codm-screenshot { margin:12px auto; }
+    #codmProfile .codm-avatar img { max-width:100%; }
+    @media (max-width:560px) {
+      #codmProfile.codm-section { padding:16px 14px; }
+      #codmProfile .codm-screenshot { border-radius:12px; }
+      #codmProfile .codm-screenshot img { width:100%; height:auto; }
+    }
+
   </style>
 </head>
 <body>
