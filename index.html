@@ -376,6 +376,7 @@
     .codm-uidrow { display:flex; align-items:center; flex-wrap:wrap; gap:8px; margin-top:11px; color:#aebbd2; font-size:11px; }
     .codm-uid { font-variant-numeric:tabular-nums; overflow-wrap:anywhere; color:#dfe6f8; }
     .codm-copy { padding:6px 9px; border-radius:9px; border-color:rgba(255,190,110,.25); background:rgba(255,174,80,.09); color:#ffd69a; font-size:10px; }
+    .codm-copy-build { width:100%; margin-top:10px; padding:9px 10px; border:1px solid rgba(255,190,110,.22); border-radius:10px; background:rgba(255,174,80,.08); color:#ffd69a; font-size:11px; font-weight:750; }
     .codm-loadout-head { display:flex; justify-content:space-between; align-items:end; gap:10px; margin:20px 1px 11px; }
     .codm-loadout-head h3 { margin:0; font-size:16px; }
     .codm-loadout-head span { color:#aeb8cf; font-size:10px; }
@@ -468,25 +469,27 @@
           <div class="codm-buildtop"><span class="codm-mode">MP BUILD</span><span class="codm-diamond">◆ RED · MP ONLY</span></div>
           <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Glorious Blaze · Build 01</div>
           <figure class="codm-screenshot"><img src="assets/krm262-mp.jpg" alt="KRM-262 Glorious Blaze red Multiplayer build screenshot" loading="lazy"><figcaption>Red Glorious Blaze · Multiplayer only</figcaption></figure>
-          <ul class="codm-attachments">
+          <ul class="codm-attachments" id="krmMpAttachments">
             <li><span>Muzzle</span><strong>Marauder Suppressor</strong></li>
             <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
             <li><span>Stock</span><strong>No Stock</strong></li>
             <li><span>Perk</span><strong>Speed Up Kill</strong></li>
             <li><span>Laser</span><strong>RTC Laser 1mW</strong></li>
           </ul>
+          <button class="codm-copy-build" type="button" data-copy-target="krmMpAttachments" data-mode="MP">Copy MP attachments</button>
         </article>
         <article class="codm-build br">
           <div class="codm-buildtop"><span class="codm-mode">BR BUILD</span><span class="codm-diamond">◆ DIAMOND CAMO · BR ONLY</span></div>
           <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Diamond Camo · Build 02</div>
           <figure class="codm-screenshot"><img src="assets/krm262-br.jpg" alt="KRM-262 Diamond camouflage Battle Royale build screenshot" loading="lazy"><figcaption>Diamond Camo · Battle Royale only</figcaption></figure>
-          <ul class="codm-attachments">
+          <ul class="codm-attachments" id="krmBrAttachments">
             <li><span>Muzzle</span><strong>Choke</strong></li>
             <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
             <li><span>Stock</span><strong>MIP Stalker Stock</strong></li>
             <li><span>Laser</span><strong>MIP Laser 5mW</strong></li>
             <li><span>Rear Grip</span><strong>Granulated Grip Tape</strong></li>
           </ul>
+          <button class="codm-copy-build" type="button" data-copy-target="krmBrAttachments" data-mode="BR">Copy BR attachments</button>
         </article>
       </div>
       <p class="codm-footer">Profile screenshot added. IGN and additional favorite guns can be filled in when you share those details.</p>
@@ -947,6 +950,27 @@
         button.textContent = "Copy unavailable";
       }
       window.setTimeout(() => { button.textContent = "Copy UID"; }, 1800);
+    });
+
+    // Copy the exact supplied attachment lists for quick reference in CODM.
+    document.querySelectorAll(".codm-copy-build").forEach(button => {
+      button.addEventListener("click", async () => {
+        const list = document.getElementById(button.dataset.copyTarget);
+        const lines = Array.from(list.querySelectorAll("li")).map(item => {
+          const label = item.querySelector("span").textContent.trim();
+          const value = item.querySelector("strong").textContent.trim();
+          return label + ": " + value;
+        });
+        const content = "KRM-262 · " + button.dataset.mode + " build\n" + lines.join("\n");
+        const originalLabel = button.textContent;
+        try {
+          await navigator.clipboard.writeText(content);
+          button.textContent = "Copied ✓";
+        } catch (_) {
+          button.textContent = "Copy unavailable";
+        }
+        window.setTimeout(() => { button.textContent = originalLabel; }, 1800);
+      });
     });
 
     // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
