@@ -26,13 +26,8 @@
         radial-gradient(ellipse at 20% 82%,rgba(35,105,139,.16),transparent 32%);
       filter:blur(22px) saturate(125%);
       transform:translate3d(0,0,0) scale(1);
-      animation:aurora-drift 30s ease-in-out infinite alternate;
+      animation:aurora-drift 60s ease-in-out infinite alternate;
       will-change:transform;
-    }
-    /* Premium particle layer: transparent, lightweight and behind the glass UI. */
-    #particleCanvas {
-      position:fixed; inset:0; z-index:0; width:100%; height:100%;
-      pointer-events:none; opacity:.72;
     }
     body:after {
       content:""; position:fixed; z-index:0; inset:0;
@@ -77,7 +72,7 @@
       position:relative; overflow:hidden; min-height:112px; display:flex; flex-direction:column; justify-content:space-between; gap:15px;
       padding:16px; border-radius:19px; border:1px solid var(--line);
       background:linear-gradient(145deg,rgba(39,54,86,.58),rgba(13,23,41,.68));
-      -webkit-backdrop-filter:blur(16px) saturate(145%); backdrop-filter:blur(16px) saturate(145%);
+      -webkit-backdrop-filter:blur(12px) saturate(130%); backdrop-filter:blur(16px) saturate(145%);
       box-shadow:0 8px 24px rgba(0,0,0,.12),inset 0 1px rgba(255,255,255,.13);
       color:#f4f6ff; text-decoration:none; box-shadow:0 8px 24px rgba(0,0,0,.12);
       transition:transform .22s ease,border-color .22s ease,background .22s ease,box-shadow .22s ease;
@@ -116,7 +111,7 @@
       .section-hint { font-size:11px; }
     }
 
-    .search-wrap { display:flex; align-items:center; gap:10px; margin:0 0 28px; padding:10px 12px; border:1px solid rgba(164,183,241,.2); border-radius:17px; background:linear-gradient(135deg,rgba(35,49,78,.66),rgba(12,21,38,.72)); box-shadow:inset 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.12); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); }
+    .search-wrap { display:flex; align-items:center; gap:10px; margin:0 0 28px; padding:10px 12px; border:1px solid rgba(164,183,241,.2); border-radius:17px; background:linear-gradient(135deg,rgba(35,49,78,.66),rgba(12,21,38,.72)); box-shadow:inset 0 1px rgba(255,255,255,.09),0 10px 28px rgba(0,0,0,.12); -webkit-backdrop-filter:blur(12px) saturate(125%); backdrop-filter:blur(18px) saturate(140%); }
     .search-symbol { flex:0 0 auto; color:#aebde7; font-size:18px; padding-left:3px; }
     .search-wrap input { min-width:0; padding:9px 2px; border:0; background:transparent; box-shadow:none; font-size:14px; }
     .search-wrap input:focus { border:0; box-shadow:none; }
@@ -140,9 +135,9 @@
           "intro intro"
           "search search"
           "empty empty"
-          "hero noteshead"
-          "quickhead notes"
-          "apps notes";
+          "hero hero"
+          "quickhead quickhead"
+          "apps apps";
         column-gap:28px;
         align-items:start;
       }
@@ -152,10 +147,8 @@
       .search-wrap { grid-area:search; }
       .search-empty { grid-area:empty; }
       .hero { grid-area:hero; min-height:190px; margin-bottom:26px; display:flex; flex-direction:column; justify-content:center; }
-      main > .section-head:nth-of-type(1) { grid-area:quickhead; }
+      main > .section-head { grid-area:quickhead; }
       .apps { grid-area:apps; grid-template-columns:repeat(3,minmax(0,1fr)); gap:14px; }
-      main > .section-head:nth-of-type(2) { grid-area:noteshead; align-self:end; }
-      .notes-panel { grid-area:notes; width:100%; }
       #time { font-size:clamp(54px,6vw,76px); }
       .app-card { min-height:124px; padding:18px; }
       .notes-panel { padding:24px; }
@@ -192,7 +185,7 @@
       textarea { min-height:110px; }
     }
     @media (max-width:560px) {
-      body:before { inset:-12%; filter:blur(28px) saturate(115%); animation-duration:38s; }
+      body:before { inset:-12%; filter:blur(18px) saturate(112%); animation-duration:60s; }
       body:after { background-size:68px 68px; opacity:.11; }
     }
 
@@ -248,102 +241,6 @@
       .app-card:hover { transform:none; }
       .app-card:hover .app-icon { transform:none; }
     }
-
-
-    /* Focus List: compact, touch-friendly task tracker with local-only storage. */
-    .focus-panel {
-      position:relative; overflow:hidden; padding:19px;
-      border:1px solid rgba(172,192,244,.19); border-radius:21px;
-      background:radial-gradient(ellipse at 5% 0%,rgba(110,153,226,.13),transparent 48%),linear-gradient(145deg,rgba(29,43,70,.72),rgba(11,20,36,.8));
-      box-shadow:0 14px 36px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.11);
-      -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%);
-    }
-    .focus-panel:before { content:""; position:absolute; top:0; left:14%; right:14%; height:1px; background:linear-gradient(90deg,transparent,rgba(195,214,255,.38),transparent); pointer-events:none; }
-    .focus-heading { display:flex; justify-content:space-between; align-items:center; gap:10px; margin-bottom:14px; }
-    .focus-heading h2 { font-size:17px; }
-    .focus-count { color:#9fb0d3; font-size:11px; white-space:nowrap; }
-    .focus-progress { height:5px; overflow:hidden; margin:-3px 0 14px; border-radius:99px; background:rgba(255,255,255,.07); }
-    .focus-progress > span { display:block; width:0; height:100%; border-radius:inherit; background:linear-gradient(90deg,#7f9dff,#76d9d0); box-shadow:0 0 12px rgba(119,177,255,.35); transition:width .3s ease; }
-    .focus-add { display:flex; gap:8px; }
-    .focus-add input { min-width:0; padding:11px 12px; font-size:13px; }
-    .focus-add button { flex:0 0 auto; padding:10px 13px; }
-    .focus-list { display:grid; gap:7px; margin:13px 0 0; padding:0; list-style:none; }
-    .focus-task { display:flex; align-items:center; gap:9px; min-width:0; padding:9px 10px; border:1px solid rgba(157,180,231,.1); border-radius:12px; background:rgba(255,255,255,.025); animation:focus-in .2s ease both; }
-    .focus-toggle { display:grid; place-items:center; flex:0 0 23px; width:23px; height:23px; padding:0; border-radius:8px; font-size:13px; background:rgba(255,255,255,.045); border-color:rgba(164,185,235,.22); }
-    .focus-task span { min-width:0; flex:1; overflow-wrap:anywhere; color:#dce5fa; font-size:13px; line-height:1.4; }
-    .focus-task.done span { color:#8493b0; text-decoration:line-through; }
-    .focus-task.done .focus-toggle { color:#b9ffe2; background:rgba(91,196,153,.14); border-color:rgba(112,220,175,.28); }
-    .focus-delete { padding:4px 7px; border:0; background:transparent; color:#8291ad; font-size:16px; }
-    .focus-delete:hover { color:#ffaaaa; }
-    .focus-empty { margin:14px 2px 2px; color:#8392b0; font-size:12px; text-align:center; }
-    .focus-footer { display:flex; justify-content:space-between; align-items:center; gap:8px; margin-top:11px; color:#8291ad; font-size:11px; }
-    .focus-footer button { padding:6px 9px; font-size:11px; }
-    .focus-footer button:disabled { opacity:.35; cursor:default; }
-    @keyframes focus-in { from { opacity:0; transform:translateY(4px); } to { opacity:1; transform:translateY(0); } }
-    @media (min-width:900px) {
-      main {
-        grid-template-areas:
-          "topbar topbar"
-          "welcome welcome"
-          "intro intro"
-          "search search"
-          "empty empty"
-          "hero noteshead"
-          "quickhead notes"
-          "apps notes"
-          "focus notes";
-      }
-      .focus-panel { grid-area:focus; margin-top:-6px; }
-    }
-    @media (max-width:560px) {
-      .focus-panel { padding:16px; }
-      .focus-add { gap:7px; }
-      .focus-add button { padding-left:11px; padding-right:11px; }
-    }
-
-
-    /* Focus timer: a lightweight Pomodoro companion, no external libraries. */
-    .timer-panel { position:relative; overflow:hidden; padding:20px; margin-top:18px; border:1px solid rgba(164,190,238,.2); border-radius:22px; background:radial-gradient(ellipse at 90% 0%,rgba(91,155,190,.14),transparent 48%),linear-gradient(145deg,rgba(25,43,66,.76),rgba(11,21,37,.84)); box-shadow:0 14px 36px rgba(0,0,0,.17),inset 0 1px rgba(255,255,255,.12); -webkit-backdrop-filter:blur(18px) saturate(140%); backdrop-filter:blur(18px) saturate(140%); }
-    .timer-head { display:flex; align-items:center; justify-content:space-between; gap:10px; }
-    .timer-head h2 { font-size:17px; }
-    .timer-mode { color:#9db1d5; font-size:11px; letter-spacing:1px; text-transform:uppercase; }
-    .timer-display { display:grid; place-items:center; width:166px; height:166px; margin:18px auto; border-radius:50%; background:conic-gradient(from -90deg,#8ca7ff var(--timer-progress,0%),rgba(255,255,255,.07) 0); box-shadow:0 0 34px rgba(110,151,226,.11); transition:background .25s ease; }
-    .timer-inner { display:grid; place-content:center; width:148px; height:148px; border:1px solid rgba(191,210,255,.14); border-radius:50%; background:radial-gradient(circle at 35% 20%,rgba(84,112,168,.3),rgba(10,19,34,.97) 70%); text-align:center; }
-    .timer-clock { font-size:38px; font-weight:760; letter-spacing:-1.8px; font-variant-numeric:tabular-nums; }
-    .timer-caption { margin-top:3px; color:#8f9fbe; font-size:10px; letter-spacing:1.2px; text-transform:uppercase; }
-    .timer-controls { display:flex; justify-content:center; gap:8px; flex-wrap:wrap; }
-    .timer-controls button { min-width:88px; padding:9px 13px; font-size:12px; }
-    .timer-modes { display:flex; justify-content:center; gap:7px; margin-top:13px; }
-    .timer-modes button { padding:7px 10px; border-radius:999px; font-size:11px; background:rgba(255,255,255,.035); border-color:rgba(157,178,230,.14); color:#aab8d5; }
-    .timer-modes button[aria-pressed="true"] { color:#eef2ff; border-color:rgba(157,184,255,.42); background:rgba(128,153,226,.17); }
-    .timer-note { margin:12px 0 0; color:#8191af; font-size:11px; text-align:center; }
-    @media (min-width:900px) { main { grid-template-areas:"topbar topbar" "welcome welcome" "intro intro" "search search" "empty empty" "hero noteshead" "quickhead notes" "apps notes" "focus notes" "timer notes"; } .timer-panel { grid-area:timer; } }
-    @media (max-width:560px) { .timer-panel { padding:17px; } }
-
-    @media (prefers-reduced-motion:reduce) {
-      *,*:before,*:after { scroll-behavior:auto!important; transition:none!important; animation:none!important; }
-      body:before { transform:none; }
-    }
-
-
-    .codm-screenshot { margin:0 0 14px; overflow:hidden; border:1px solid rgba(255,255,255,.13); border-radius:15px; background:rgba(4,8,16,.5); box-shadow:0 12px 30px rgba(0,0,0,.22),0 0 22px rgba(255,105,86,.08); }
-    .codm-screenshot img { display:block; width:100%; height:auto; object-fit:contain; }
-
-    .codm-screenshot img { cursor:zoom-in; -webkit-tap-highlight-color:transparent; }
-    .codm-lightbox { position:fixed; inset:0; z-index:9999; display:none; align-items:center; justify-content:center; padding:16px; background:rgba(3,6,13,.94); backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px); }
-    .codm-lightbox.open { display:flex; }
-    .codm-lightbox img { display:block; max-width:100%; max-height:calc(100dvh - 90px); width:auto; height:auto; object-fit:contain; border:1px solid rgba(255,255,255,.16); border-radius:12px; box-shadow:0 24px 80px rgba(0,0,0,.6); }
-    .codm-lightbox-close { position:absolute; top:max(14px,env(safe-area-inset-top)); right:14px; width:42px; height:42px; border:1px solid rgba(255,255,255,.2); border-radius:50%; color:#fff; background:rgba(255,255,255,.1); font-size:24px; cursor:pointer; }
-    .codm-lightbox-caption { position:absolute; bottom:max(14px,env(safe-area-inset-bottom)); left:16px; right:16px; color:#cbd4e7; font-size:12px; text-align:center; }
-    body.codm-zoom-open { overflow:hidden; }
-    @media (max-width:560px) { .codm-lightbox { padding:8px; } .codm-lightbox img { max-height:calc(100dvh - 100px); } }
-
-    .codm-screenshot figcaption { padding:7px 10px; color:#aebbd2; font-size:10px; letter-spacing:.25px; background:rgba(255,255,255,.035); }
-    .codm-profile-shot { margin-bottom:14px; }
-    .codm-profile-shot img { aspect-ratio:2.28/1; object-fit:cover; object-position:center 43%; }
-    .codm-build .codm-screenshot { margin:12px 0; }
-    .codm-build .codm-screenshot figcaption { color:#ffb9a8; }
-    .codm-build.br .codm-screenshot figcaption { color:#ffd18b; }
 
 
     /* CODM is a dedicated in-dashboard page, opened from its quick-launch tile. */
@@ -415,7 +312,6 @@
   </style>
 </head>
 <body>
-  <canvas id="particleCanvas" aria-hidden="true"></canvas>
   <main id="dashboard">
     <header class="topbar">
       <div class="brand"><span class="brand-mark">✦</span> Nico<span class="accent">OS</span></div>
@@ -496,155 +392,8 @@
       <p class="codm-footer">Profile screenshot added. IGN and additional favorite guns can be filled in when you share those details.</p>
     </section>
 
-    <section class="focus-panel" id="focusList" aria-labelledby="focusTitle">
-      <div class="focus-heading">
-        <h2 id="focusTitle">Focus list <span class="accent">✦</span></h2>
-        <span class="focus-count" id="focusCount">0 tasks</span>
-      </div>
-      <div class="focus-progress" role="progressbar" aria-label="Focus tasks completed" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" id="focusProgress"><span id="focusProgressBar"></span></div>
-      <form class="focus-add" id="focusForm">
-        <input id="focusInput" type="text" maxlength="90" placeholder="What's your next task?" aria-label="New focus task" autocomplete="off">
-        <button type="submit">＋ Add</button>
-      </form>
-      <ul class="focus-list" id="focusTasks"></ul>
-      <p class="focus-empty" id="focusEmpty">Nothing on your list yet. Add one small goal ✨</p>
-      <div class="focus-footer">
-        <span id="focusHint">Saved on this device</span>
-        <button class="secondary" id="clearDone" type="button" disabled>Clear completed</button>
-      </div>
-    </section>
-    <section class="timer-panel" id="focusTimer" aria-labelledby="timerTitle">
-      <div class="timer-head">
-        <h2 id="timerTitle">Focus timer <span class="accent">◷</span></h2>
-        <span class="timer-mode" id="timerModeLabel">Focus session</span>
-      </div>
-      <div class="timer-display" id="timerRing" role="timer" aria-label="25 minutes remaining">
-        <div class="timer-inner">
-          <div class="timer-clock" id="timerClock">25:00</div>
-          <div class="timer-caption" id="timerCaption">Ready when you are</div>
-        </div>
-      </div>
-      <div class="timer-controls">
-        <button id="timerStart" type="button">▶ Start</button>
-        <button id="timerReset" class="secondary" type="button">↺ Reset</button>
-      </div>
-      <div class="timer-modes" aria-label="Timer mode">
-        <button type="button" data-minutes="25" data-mode="Focus" aria-pressed="true">Focus · 25m</button>
-        <button type="button" data-minutes="5" data-mode="Short break" aria-pressed="false">Break · 5m</button>
-      </div>
-      <p class="timer-note" id="timerHint" aria-live="polite">Your timer is remembered on this device.</p>
-    </section>
-    <div class="section-head">
-      <h2>Quick notes <span class="accent">✎</span></h2>
-      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="section-hint">Private & encrypted</span><button class="notes-toggle" id="notesToggle" type="button" aria-expanded="true" aria-controls="quickNotes">Hide notes ↑</button></div>
-    </div>
-    <section class="notes-panel" id="quickNotes">
-      <div id="pinSetup" hidden>
-        <h3 class="notes-title">🔐 Set your Notes PIN</h3>
-        <p class="muted">Create a 6-digit PIN. You will need it to unlock your encrypted notes.</p>
-        <input id="newPin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Create 6-digit PIN" autocomplete="new-password">
-        <div style="height:10px"></div>
-        <input id="confirmPin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Confirm PIN" autocomplete="new-password">
-        <div class="note-actions"><button id="savePin">Create PIN &amp; unlock</button></div>
-        <p class="pin-status" id="setupStatus" role="status"></p>
-      </div>
-      <div id="pinUnlock" hidden>
-        <h3 class="notes-title">🔒 Notes are locked</h3>
-        <p class="muted">Enter your 6-digit PIN to unlock your private notes.</p>
-        <input id="unlockPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit PIN" autocomplete="current-password">
-        <div class="note-actions"><button id="unlockButton">Unlock notes</button></div>
-        <p class="pin-status" id="unlockStatus" role="status"></p>
-      </div>
-      <div id="notesArea" hidden>
-        <textarea id="notes" placeholder="Write your ideas here..."></textarea>
-        <p class="notes-foot" id="saveStatus" role="status" aria-live="polite">Your notes are stored securely on this device.</p>
-        <div class="note-actions"><button class="secondary" id="lockNotes">🔒 Lock now</button></div>
-        <p class="notes-foot">Encrypted and saved in this browser on this device.</p>
-      </div>
-    </section>
   </main>
   <script>
-    // Subtle floating particles with faint connecting lines.
-    // Scales particle count to screen size and pauses when the page is hidden.
-    (() => {
-      const canvas = document.getElementById("particleCanvas");
-      const ctx = canvas && canvas.getContext("2d");
-      if (!ctx) return;
-      const reduceMotion = window.matchMedia("(prefers-reduced-motion: reduce)");
-      let width = 0, height = 0, particles = [], frame = 0, running = false;
-      const dpr = () => Math.min(window.devicePixelRatio || 1, 1.5);
-      function makeParticles() {
-        const count = Math.min(58, Math.max(22, Math.floor(width * height / 23000)));
-        particles = Array.from({ length: count }, () => ({
-          x: Math.random() * width, y: Math.random() * height,
-          vx: (Math.random() - .5) * .22, vy: (Math.random() - .5) * .22,
-          r: Math.random() * 1.35 + .45, a: Math.random() * .34 + .16,
-          phase: Math.random() * Math.PI * 2, tint: Math.random()
-        }));
-      }
-      function resize() {
-        width = window.innerWidth; height = window.innerHeight;
-        const scale = dpr();
-        canvas.width = Math.round(width * scale);
-        canvas.height = Math.round(height * scale);
-        canvas.style.width = width + "px";
-        canvas.style.height = height + "px";
-        ctx.setTransform(scale, 0, 0, scale, 0, 0);
-        makeParticles();
-        if (reduceMotion.matches) draw();
-      }
-      function draw() {
-        ctx.clearRect(0, 0, width, height);
-        for (let i = 0; i < particles.length; i++) {
-          const p = particles[i];
-          if (!reduceMotion.matches) {
-            p.x += p.vx; p.y += p.vy;
-            if (p.x < -8) p.x = width + 8;
-            if (p.x > width + 8) p.x = -8;
-            if (p.y < -8) p.y = height + 8;
-            if (p.y > height + 8) p.y = -8;
-          }
-          ctx.beginPath();
-          ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2);
-          const shimmer = reduceMotion.matches ? 1 : .72 + Math.sin(performance.now() * .0012 + p.phase) * .28;
-          const tint = p.tint > .72 ? "143,220,235" : (p.tint > .38 ? "190,207,255" : "169,181,255");
-          ctx.fillStyle = "rgba(" + tint + "," + (p.a * shimmer) + ")";
-          ctx.fill();
-          for (let j = i + 1; j < particles.length; j++) {
-            const q = particles[j], dx = p.x - q.x, dy = p.y - q.y;
-            const distance = Math.sqrt(dx * dx + dy * dy);
-            if (distance < 112) {
-              ctx.beginPath();
-              ctx.moveTo(p.x, p.y); ctx.lineTo(q.x, q.y);
-              ctx.strokeStyle = "rgba(137,166,235," + ((1 - distance / 112) * .105) + ")";
-              ctx.lineWidth = .7; ctx.stroke();
-            }
-          }
-        }
-      }
-      function animate() {
-        if (!running || document.hidden || reduceMotion.matches) { running = false; return; }
-        draw();
-        frame = requestAnimationFrame(animate);
-      }
-      function start() {
-        if (running || document.hidden || reduceMotion.matches) return;
-        running = true;
-        frame = requestAnimationFrame(animate);
-      }
-      function stop() {
-        running = false;
-        cancelAnimationFrame(frame);
-      }
-      resize();
-      start();
-      window.addEventListener("resize", resize, { passive:true });
-      document.addEventListener("visibilitychange", () => document.hidden ? stop() : start());
-      if (reduceMotion.addEventListener) reduceMotion.addEventListener("change", () => {
-        stop(); resize(); start();
-      });
-    })();
-
     function updateClock() {
       const now = new Date();
       document.getElementById("time").textContent = now.toLocaleTimeString();
@@ -719,220 +468,6 @@
       });
     })();
 
-    // Focus List: task text is rendered safely and stored only in this browser.
-    (() => {
-      const KEY = "nicoos-focus-tasks-v1";
-      const form = document.getElementById("focusForm");
-      const input = document.getElementById("focusInput");
-      const list = document.getElementById("focusTasks");
-      const empty = document.getElementById("focusEmpty");
-      const count = document.getElementById("focusCount");
-      const progress = document.getElementById("focusProgress");
-      const progressBar = document.getElementById("focusProgressBar");
-      const clearDone = document.getElementById("clearDone");
-      let tasks = [];
-      try {
-        const stored = JSON.parse(localStorage.getItem(KEY) || "[]");
-        if (Array.isArray(stored)) tasks = stored.filter(t =>
-          t && typeof t.id === "string" && typeof t.text === "string" && typeof t.done === "boolean"
-        ).slice(0, 100);
-      } catch (_) { tasks = []; }
-
-      function save() {
-        try {
-          localStorage.setItem(KEY, JSON.stringify(tasks));
-          document.getElementById("focusHint").textContent = "Saved on this device";
-        } catch (_) {
-          document.getElementById("focusHint").textContent = "Storage is full — remove some tasks";
-        }
-      }
-      function render() {
-        list.replaceChildren();
-        const completed = tasks.filter(t => t.done).length;
-        const percent = tasks.length ? Math.round(completed / tasks.length * 100) : 0;
-        count.textContent = tasks.length + (tasks.length === 1 ? " task" : " tasks");
-        progressBar.style.width = percent + "%";
-        progress.setAttribute("aria-valuenow", String(percent));
-        empty.hidden = tasks.length > 0;
-        clearDone.disabled = completed === 0;
-        tasks.forEach(task => {
-          const item = document.createElement("li");
-          item.className = "focus-task" + (task.done ? " done" : "");
-          const toggle = document.createElement("button");
-          toggle.type = "button";
-          toggle.className = "focus-toggle";
-          toggle.dataset.action = "toggle";
-          toggle.dataset.id = task.id;
-          toggle.setAttribute("aria-label", task.done ? "Mark task as not done" : "Mark task as done");
-          toggle.setAttribute("aria-pressed", String(task.done));
-          toggle.textContent = task.done ? "✓" : "";
-          const label = document.createElement("span");
-          label.textContent = task.text;
-          const remove = document.createElement("button");
-          remove.type = "button";
-          remove.className = "focus-delete";
-          remove.dataset.action = "delete";
-          remove.dataset.id = task.id;
-          remove.setAttribute("aria-label", "Delete task");
-          remove.textContent = "×";
-          item.append(toggle, label, remove);
-          list.append(item);
-        });
-      }
-      form.addEventListener("submit", event => {
-        event.preventDefault();
-        const value = input.value.trim();
-        if (!value) { input.focus(); return; }
-        if (tasks.filter(t => !t.done).length >= 12) {
-          document.getElementById("focusHint").textContent = "Finish or clear a task before adding more";
-          return;
-        }
-        tasks.push({ id: Date.now().toString(36) + Math.random().toString(36).slice(2, 7), text: value, done: false });
-        input.value = "";
-        save();
-        render();
-        input.focus();
-      });
-      list.addEventListener("click", event => {
-        const button = event.target.closest("button[data-action]");
-        if (!button) return;
-        const task = tasks.find(t => t.id === button.dataset.id);
-        if (!task) return;
-        if (button.dataset.action === "toggle") task.done = !task.done;
-        if (button.dataset.action === "delete") tasks = tasks.filter(t => t.id !== task.id);
-        save();
-        render();
-      });
-      clearDone.addEventListener("click", () => {
-        tasks = tasks.filter(t => !t.done);
-        save();
-        render();
-      });
-      render();
-    })();
-
-    // Focus timer: deadline-based countdown survives tab switching and page reloads.
-    (() => {
-      const STORAGE_KEY = "nicoos-focus-timer-v1";
-      const MODES = { Focus: 25 * 60, "Short break": 5 * 60 };
-      const clock = document.getElementById("timerClock");
-      const ring = document.getElementById("timerRing");
-      const caption = document.getElementById("timerCaption");
-      const modeLabel = document.getElementById("timerModeLabel");
-      const hint = document.getElementById("timerHint");
-      const startButton = document.getElementById("timerStart");
-      const resetButton = document.getElementById("timerReset");
-      const modeButtons = Array.from(document.querySelectorAll(".timer-modes button"));
-      let duration = MODES.Focus, remaining = duration, deadline = 0, interval = null, running = false, mode = "Focus";
-
-      function saveState() {
-        try {
-          localStorage.setItem(STORAGE_KEY, JSON.stringify({ mode, remaining, deadline, running }));
-        } catch (_) {}
-      }
-      function restoreState() {
-        try {
-          const saved = JSON.parse(localStorage.getItem(STORAGE_KEY) || "null");
-          if (!saved || !Object.prototype.hasOwnProperty.call(MODES, saved.mode) || typeof saved.running !== "boolean") return;
-          const savedRemaining = Number(saved.remaining);
-          if (!Number.isInteger(savedRemaining) || savedRemaining < 0 || savedRemaining > MODES[saved.mode]) return;
-          mode = saved.mode;
-          duration = MODES[mode];
-          remaining = savedRemaining;
-          deadline = Number(saved.deadline);
-          running = saved.running && Number.isFinite(deadline) && deadline > 0;
-          if (running) {
-            remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-            if (remaining === 0) {
-              running = false;
-              deadline = 0;
-              hint.textContent = mode === "Focus" ? "Nice work. Time for a short break ☕" : "Break complete. Ready for another focus session?";
-              saveState();
-            } else {
-              hint.textContent = "Session resumed after reopening NicoOS.";
-            }
-          } else {
-            deadline = 0;
-          }
-          modeButtons.forEach(button => button.setAttribute("aria-pressed", String(button.dataset.mode === mode)));
-        } catch (_) {}
-      }
-      function format(seconds) {
-        return String(Math.floor(seconds / 60)).padStart(2, "0") + ":" + String(seconds % 60).padStart(2, "0");
-      }
-      function render() {
-        clock.textContent = format(remaining);
-        ring.style.setProperty("--timer-progress", ((duration - remaining) / duration * 100) + "%");
-        ring.setAttribute("aria-label", format(remaining) + " remaining");
-        caption.textContent = running ? "Stay in the zone" : (remaining === 0 ? "Session complete" : "Ready when you are");
-        startButton.textContent = running ? "Ⅱ Pause" : (remaining === 0 ? "↻ Restart" : "▶ Start");
-        modeLabel.textContent = mode === "Focus" ? "Focus session" : "Short break";
-      }
-      function stopInterval() {
-        if (interval !== null) window.clearInterval(interval);
-        interval = null;
-      }
-      function tick() {
-        remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-        if (remaining <= 0) {
-          remaining = 0;
-          running = false;
-          deadline = 0;
-          stopInterval();
-          hint.textContent = mode === "Focus" ? "Nice work. Time for a short break ☕" : "Break complete. Ready for another focus session?";
-          saveState();
-        }
-        render();
-      }
-      function start() {
-        if (running) return;
-        if (remaining <= 0) remaining = duration;
-        deadline = Date.now() + remaining * 1000;
-        running = true;
-        hint.textContent = mode === "Focus" ? "One task. One session. You've got this." : "Take a breath and recharge.";
-        stopInterval();
-        saveState();
-        tick();
-        if (running) interval = window.setInterval(tick, 250);
-      }
-      function pause() {
-        if (!running) return;
-        remaining = Math.max(0, Math.ceil((deadline - Date.now()) / 1000));
-        running = false;
-        deadline = 0;
-        stopInterval();
-        hint.textContent = "Paused. Pick it up whenever you're ready.";
-        saveState();
-        render();
-      }
-      function reset() {
-        running = false;
-        deadline = 0;
-        stopInterval();
-        remaining = duration;
-        hint.textContent = "Timer reset. Ready when you are.";
-        saveState();
-        render();
-      }
-      startButton.addEventListener("click", () => running ? pause() : start());
-      resetButton.addEventListener("click", reset);
-      modeButtons.forEach(button => button.addEventListener("click", () => {
-        mode = button.dataset.mode;
-        duration = MODES[mode];
-        modeButtons.forEach(item => item.setAttribute("aria-pressed", String(item === button)));
-        reset();
-      }));
-      document.addEventListener("visibilitychange", () => { if (running && !document.hidden) tick(); });
-      restoreState();
-      render();
-      if (running) {
-        tick();
-        if (running) interval = window.setInterval(tick, 250);
-      }
-    })();
-
-
-
     // Internal CODM hub navigation: keep the dashboard and profile in one page.
     // CODM opens through the native URL fragment, so it still works if another
     // dashboard script fails. The back link returns to the dashboard anchor.
@@ -974,155 +509,6 @@
       });
     });
 
-    // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
-    const notes = document.getElementById("notes");
-    const pinSetup = document.getElementById("pinSetup");
-    const pinUnlock = document.getElementById("pinUnlock");
-    const notesArea = document.getElementById("notesArea");
-    const setupStatus = document.getElementById("setupStatus");
-    const unlockStatus = document.getElementById("unlockStatus");
-    const saveStatus = document.getElementById("saveStatus");
-    const STORAGE_KEY = "nicoos-notes-encrypted-v1";
-    let saveTimer;
-
-    // Toggle the notes panel without changing its encrypted storage or PIN flow.
-    const notesToggle = document.getElementById("notesToggle");
-    notesToggle.addEventListener("click", () => {
-      const isOpen = notesToggle.getAttribute("aria-expanded") === "true";
-      notesToggle.setAttribute("aria-expanded", String(!isOpen));
-      notesToggle.textContent = isOpen ? "Open notes ↓" : "Hide notes ↑";
-      document.getElementById("quickNotes").hidden = isOpen;
-      if (!isOpen) document.getElementById("quickNotes").scrollIntoView({ behavior: "smooth", block: "center" });
-    });
-
-    function showNotesState(state) {
-      pinSetup.hidden = state !== "setup";
-      pinUnlock.hidden = state !== "locked";
-      notesArea.hidden = state !== "unlocked";
-    }
-
-    function bytesToBase64(bytes) {
-      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
-    }
-    function base64ToBytes(value) {
-      return Uint8Array.from(atob(value), c => c.charCodeAt(0));
-    }
-    async function deriveKey(pin, salt) {
-      const material = await crypto.subtle.importKey(
-        "raw", new TextEncoder().encode(pin), "PBKDF2", false, ["deriveKey"]
-      );
-      return crypto.subtle.deriveKey(
-        { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
-        material, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
-      );
-    }
-    async function encryptAndSave() {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      const salt = base64ToBytes(saved.salt);
-      const key = await deriveKey(window.__nicoNotesPin, salt);
-      const iv = crypto.getRandomValues(new Uint8Array(12));
-      const encrypted = await crypto.subtle.encrypt(
-        { name: "AES-GCM", iv }, key, new TextEncoder().encode(notes.value)
-      );
-      localStorage.setItem(STORAGE_KEY, JSON.stringify({
-        salt: saved.salt, iv: bytesToBase64(iv), data: bytesToBase64(encrypted)
-      }));
-    }
-    function lockNotes() {
-      clearTimeout(saveTimer);
-      window.__nicoNotesPin = null;
-      notes.value = "";
-      showNotesState("locked");
-      document.getElementById("unlockPin").value = "";
-      unlockStatus.textContent = "";
-    }
-    async function unlockWithPin(pin) {
-      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
-      const key = await deriveKey(pin, base64ToBytes(saved.salt));
-      const decrypted = await crypto.subtle.decrypt(
-        { name: "AES-GCM", iv: base64ToBytes(saved.iv) },
-        key, base64ToBytes(saved.data)
-      );
-      window.__nicoNotesPin = pin;
-      notes.value = new TextDecoder().decode(decrypted);
-      showNotesState("unlocked");
-    }
-
-    if (!window.crypto || !crypto.subtle) {
-      showNotesState("setup");
-      setupStatus.textContent = "Secure encryption is unavailable. Open NicoOS using its HTTPS GitHub Pages address.";
-    } else {
-      showNotesState(localStorage.getItem(STORAGE_KEY) ? "locked" : "setup");
-    }
-
-    document.getElementById("savePin").addEventListener("click", async () => {
-      const pin = document.getElementById("newPin").value;
-      const confirm = document.getElementById("confirmPin").value;
-      if (!/^\d{6}$/.test(pin)) {
-        setupStatus.textContent = "Please enter exactly 6 digits.";
-        return;
-      }
-      if (pin !== confirm) {
-        setupStatus.textContent = "PINs do not match. Try again.";
-        return;
-      }
-      try {
-        const salt = crypto.getRandomValues(new Uint8Array(16));
-        const key = await deriveKey(pin, salt);
-        const iv = crypto.getRandomValues(new Uint8Array(12));
-        const initialNotes = localStorage.getItem("nicoos-notes") || "";
-        const encrypted = await crypto.subtle.encrypt(
-          { name: "AES-GCM", iv }, key, new TextEncoder().encode(initialNotes)
-        );
-        localStorage.setItem(STORAGE_KEY, JSON.stringify({
-          salt: bytesToBase64(salt), iv: bytesToBase64(iv), data: bytesToBase64(encrypted)
-        }));
-        localStorage.removeItem("nicoos-notes");
-        window.__nicoNotesPin = pin;
-        notes.value = initialNotes;
-        showNotesState("unlocked");
-      } catch (error) {
-        setupStatus.textContent = "Could not set up encryption in this browser.";
-      }
-    });
-
-    document.getElementById("unlockButton").addEventListener("click", async () => {
-      const pin = document.getElementById("unlockPin").value;
-      if (!/^\d{6}$/.test(pin)) {
-        unlockStatus.textContent = "Enter your 6-digit PIN.";
-        return;
-      }
-      try {
-        await unlockWithPin(pin);
-      } catch (error) {
-        unlockStatus.textContent = "Incorrect PIN. Your notes are still locked.";
-      }
-    });
-
-    document.getElementById("lockNotes").addEventListener("click", async () => {
-      try { await encryptAndSave(); } catch (error) {
-        alert("Could not save encrypted notes. Keep this page open and try again.");
-        return;
-      }
-      lockNotes();
-    });
-
-    notes.addEventListener("input", () => {
-      clearTimeout(saveTimer);
-      saveStatus.textContent = "Unsaved changes…";
-      saveTimer = setTimeout(() => {
-        encryptAndSave().then(() => {
-          saveStatus.textContent = "✓ Saved securely on this device";
-        }).catch(() => {
-          saveStatus.textContent = "Couldn't save. Check your browser storage.";
-        });
-      }, 500);
-    });
-
-    // Save the latest edits before leaving the page, then require the PIN next visit.
-    window.addEventListener("pagehide", () => {
-      if (window.__nicoNotesPin) encryptAndSave().catch(() => {});
-    });
   </script>
 
   <div class="codm-lightbox" id="codmLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
