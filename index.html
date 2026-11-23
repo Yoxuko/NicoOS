@@ -454,6 +454,13 @@
     .support-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
     .support-option { display:inline-flex; align-items:center; gap:7px; padding:9px 12px; border:1px solid rgba(169,184,255,.17); border-radius:12px; background:rgba(5,11,23,.28); color:#dbe3ff; font-size:12px; font-weight:700; }
     .support-note { margin:12px 0 0; color:#8190ad; font-size:11px; }
+    .support-qr-wrap { display:flex; align-items:center; flex-wrap:wrap; gap:18px; margin-top:16px; }
+    .support-qr-link { display:flex; flex-direction:column; align-items:center; gap:7px; width:156px; padding:10px; border:1px solid rgba(255,255,255,.18); border-radius:16px; background:#fff; color:#26324c; text-decoration:none; font-size:11px; font-weight:750; }
+    .support-qr { display:block; width:100%; aspect-ratio:1; object-fit:contain; background:#fff; }
+    .support-steps { color:#b8c4df; font-size:12px; line-height:1.55; }
+    .support-steps strong { display:block; margin-bottom:6px; color:#edf1ff; font-size:13px; }
+    .support-steps p { margin:4px 0; }
+    @media (max-width:560px) { .support-qr-wrap { gap:14px; } .support-qr-link { width:140px; } }
     @media (max-width:560px) { .support-card { margin-top:20px; padding:17px; } }
 
   </style>
@@ -497,11 +504,22 @@
       <div class="support-top"><span aria-hidden="true">♥</span> Support this project</div>
       <h2 class="support-title" id="supportTitle">Enjoying NicoOS?</h2>
       <p class="support-copy">If you like this little project, you can help support its development. Every contribution is completely optional and appreciated. Thank you for being here!</p>
-      <div class="support-options" aria-label="Planned donation methods">
-        <span class="support-option">₱ GCash</span>
-        <span class="support-option">☕ Ko-fi</span>
+      <div class="support-options" aria-label="Donation methods">
+        <span class="support-option">₱ GCash · Any amount</span>
       </div>
-      <p class="support-note">Donation links will be added soon.</p>
+      <div class="support-qr-wrap">
+        <a class="support-qr-link" href="assets/gcash-qr.svg" target="_blank" rel="noopener noreferrer" aria-label="Open GCash donation QR in a new tab">
+          <img class="support-qr" src="assets/gcash-qr.svg" alt="GCash donation QR code" loading="lazy" decoding="async">
+          <span>Tap QR to enlarge ↗</span>
+        </a>
+        <div class="support-steps">
+          <strong>How to support</strong>
+          <p>1. Scan the QR with GCash or a supported InstaPay app.</p>
+          <p>2. Enter any amount you wish to give.</p>
+          <p>3. Check the recipient name before confirming.</p>
+        </div>
+      </div>
+      <p class="support-note">Donations are optional. Thank you for supporting NicoOS! 💙</p>
     </section>
 
     <section class="codm-section" id="codmProfile" aria-labelledby="codmTitle">
