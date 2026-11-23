@@ -343,6 +343,16 @@
       background:rgba(255,255,255,.035);
     }
     #codmProfile .codm-profile-shot { margin:14px auto 18px; }
+    #codmProfile .codm-br-gallery {
+      display:grid;
+      grid-template-columns:repeat(2,minmax(0,1fr));
+      gap:10px;
+      margin:10px 0 14px;
+    }
+    #codmProfile .codm-br-gallery .codm-screenshot { margin:0; }
+    @media (max-width:560px) {
+      #codmProfile .codm-br-gallery { grid-template-columns:1fr; gap:9px; }
+    }
     #codmProfile .codm-build { min-width:0; overflow:hidden; }
     #codmProfile .codm-build .codm-screenshot { margin:12px auto; }
     #codmProfile .codm-avatar img { max-width:100%; }
@@ -394,7 +404,7 @@
         <div><div class="codm-kicker">Operator dossier · Call of Duty Mobile</div><h2 class="codm-title" id="codmTitle">My <span style="color:#ff9b80">CODM</span> profile</h2></div>
         <span class="codm-status">✦ TIER 450 · ONLINE</span>
       </div>
-      <figure class="codm-screenshot codm-profile-shot"><img src="assets/codm-profile.jpg" alt="CODM player profile screenshot showing the character, Tier 450, squad and UID" loading="lazy"><figcaption>Latest player profile · Tier 450 · RXI ESPORTS</figcaption></figure>
+      <figure class="codm-screenshot codm-profile-shot"><img src="assets/Screenshot_20261123-165002.jpg" alt="CODM player profile screenshot showing the character, Tier 450, squad and UID" loading="lazy"><figcaption>Latest player profile · Tier 450 · RXI ESPORTS</figcaption></figure>
       <div class="codm-profile">
         <div class="codm-avatar"><img src="assets/codm-avatar.jpg" alt="Operator character shown in the supplied CODM player profile screenshot" loading="lazy"></div>
         <div>
@@ -408,7 +418,7 @@
         <article class="codm-build">
           <div class="codm-buildtop"><span class="codm-mode">MP BUILD</span><span class="codm-diamond">◆ GLORIOUS BLAZE</span></div>
           <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Glorious Blaze · Multiplayer</div>
-          <figure class="codm-screenshot"><img src="assets/krm262-mp.jpg" alt="KRM-262 Glorious Blaze red Multiplayer build screenshot" loading="lazy"><figcaption>Glorious Blaze · Multiplayer gunsmith</figcaption></figure>
+          <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-164947.jpg" alt="KRM-262 Glorious Blaze red Multiplayer build screenshot" loading="lazy"><figcaption>Glorious Blaze · Multiplayer gunsmith</figcaption></figure>
           <ul class="codm-attachments" id="krmMpAttachments">
             <li><span>Muzzle</span><strong>Marauder Suppressor</strong></li>
             <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
@@ -421,7 +431,15 @@
         <article class="codm-build br">
           <div class="codm-buildtop"><span class="codm-mode">BR BUILD</span><span class="codm-diamond">◆ GLORIOUS BLAZE</span></div>
           <h4 class="codm-weapon">KRM-262</h4><div class="codm-skin">Glorious Blaze · Battle Royale</div>
-          <figure class="codm-screenshot"><img src="assets/krm262-br.jpg" alt="KRM-262 Diamond camouflage Battle Royale build screenshot" loading="lazy"><figcaption>Glorious Blaze · Battle Royale gunsmith</figcaption></figure>
+          <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-164932.jpg" alt="KRM-262 Glorious Blaze Battle Royale gunsmith screenshot" loading="lazy"><figcaption>Glorious Blaze · Battle Royale gunsmith</figcaption></figure>
+          <div class="codm-br-gallery" aria-label="Additional Battle Royale attachment screenshots">
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165016.jpg" alt="KRM-262 Battle Royale attachment screenshot 1" loading="lazy"><figcaption>BR attachment · 1</figcaption></figure>
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165024.jpg" alt="KRM-262 Battle Royale attachment screenshot 2" loading="lazy"><figcaption>BR attachment · 2</figcaption></figure>
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165030.jpg" alt="KRM-262 Battle Royale attachment screenshot 3" loading="lazy"><figcaption>BR attachment · 3</figcaption></figure>
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165035.jpg" alt="KRM-262 Battle Royale attachment screenshot 4" loading="lazy"><figcaption>BR attachment · 4</figcaption></figure>
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165041.jpg" alt="KRM-262 Battle Royale attachment screenshot 5" loading="lazy"><figcaption>BR attachment · 5</figcaption></figure>
+            <figure class="codm-screenshot"><img src="assets/Screenshot_20261123-165048.jpg" alt="KRM-262 Battle Royale attachment screenshot 6" loading="lazy"><figcaption>BR attachment · 6</figcaption></figure>
+          </div>
           <ul class="codm-attachments" id="krmBrAttachments">
             <li><span>Muzzle</span><strong>Choke</strong></li>
             <li><span>Barrel</span><strong>RTC Light Extended Barrel</strong></li>
