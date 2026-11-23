@@ -406,15 +406,6 @@
     }
 
   
-    /* Individual copy controls for every MP/BR gunsmith attachment. */
-    .codm-attachments li { display:flex; align-items:center; gap:8px; flex-wrap:wrap; }
-    .codm-attachments li > span { color:#aebbd2; }
-    .codm-attachments li > strong { flex:1 1 auto; }
-    .codm-copy-one {
-      flex:0 0 auto; padding:5px 9px; border:1px solid rgba(255,190,110,.22);
-      border-radius:8px; color:#ffd69a; background:rgba(255,174,80,.08);
-      font:inherit; font-size:10px; font-weight:700;
-    }
 
   </style>
 </head>
@@ -648,29 +639,6 @@
       window.setTimeout(() => { button.textContent = "Copy UID"; }, 1800);
     });
 
-
-    // Add a separate one-tap copy action to each individual attachment.
-    document.querySelectorAll(".codm-attachments li").forEach(item => {
-      if (item.querySelector(".codm-copy-one")) return;
-      const label = item.querySelector("span")?.textContent.trim() || "Attachment";
-      const value = item.querySelector("strong")?.textContent.trim() || "";
-      const copyButton = document.createElement("button");
-      copyButton.type = "button";
-      copyButton.className = "codm-copy-one";
-      copyButton.textContent = "Copy attachment";
-      copyButton.setAttribute("aria-label", "Copy " + label + ": " + value);
-      copyButton.addEventListener("click", async () => {
-        const original = copyButton.textContent;
-        try {
-          await navigator.clipboard.writeText(value);
-          copyButton.textContent = "Copied ✓";
-        } catch (_) {
-          copyButton.textContent = "Copy unavailable";
-        }
-        window.setTimeout(() => { copyButton.textContent = original; }, 1800);
-      });
-      item.appendChild(copyButton);
-    });
 
     // Copy the exact supplied attachment lists for quick reference in CODM.
     document.querySelectorAll(".codm-copy-build").forEach(button => {
