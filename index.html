@@ -362,6 +362,49 @@
       #codmProfile .codm-screenshot img { width:100%; height:auto; }
     }
 
+
+    /* Fullscreen CODM image viewer with native-resolution fit and pinch zoom. */
+    body.codm-zoom-open { overflow:hidden; }
+    .codm-lightbox {
+      position:fixed; inset:0; z-index:9999; display:none;
+      align-items:center; justify-content:center; flex-direction:column;
+      padding:58px 12px 22px; box-sizing:border-box;
+      background:rgba(3,6,12,.97); backdrop-filter:blur(16px);
+      -webkit-backdrop-filter:blur(16px);
+      touch-action:none;
+    }
+    .codm-lightbox.open { display:flex; }
+    .codm-lightbox-close {
+      position:absolute; top:calc(env(safe-area-inset-top, 0px) + 12px); right:14px;
+      width:42px; height:42px; border:1px solid rgba(255,255,255,.22);
+      border-radius:50%; color:#fff; background:rgba(255,255,255,.12);
+      font-size:28px; line-height:1; z-index:2;
+    }
+    .codm-lightbox-tools {
+      position:absolute; top:calc(env(safe-area-inset-top, 0px) + 13px); left:14px;
+      display:flex; gap:8px; z-index:2;
+    }
+    .codm-lightbox-tools button {
+      min-width:40px; height:40px; padding:0 12px;
+      border:1px solid rgba(255,255,255,.2); border-radius:22px;
+      color:#fff; background:rgba(255,255,255,.12); font-size:18px;
+    }
+    #codmLightboxImage {
+      display:block; width:auto; height:auto;
+      max-width:calc(100vw - 24px); max-height:calc(100dvh - 112px);
+      object-fit:contain; object-position:center;
+      transform:translate3d(0,0,0) scale(1); transform-origin:center center;
+      user-select:none; -webkit-user-drag:none;
+      touch-action:none; will-change:transform;
+    }
+    .codm-lightbox-caption {
+      max-width:92vw; margin-top:12px; color:#dce5f5;
+      font-size:12px; line-height:1.4; text-align:center;
+    }
+    @media (orientation:landscape) {
+      #codmLightboxImage { max-height:calc(100dvh - 82px); max-width:calc(100vw - 30px); }
+    }
+
   </style>
 </head>
 <body>
@@ -501,31 +544,72 @@
     });
 
 
-    // Tap any CODM screenshot to inspect it in a full-screen preview.
+    // Fullscreen image viewer: tap to open, pinch/double-tap to zoom, drag when zoomed.
     (() => {
       const lightbox = document.getElementById("codmLightbox");
       const preview = document.getElementById("codmLightboxImage");
       const caption = document.getElementById("codmLightboxCaption");
       const closeButton = document.getElementById("codmLightboxClose");
+      const zoomIn = document.getElementById("codmZoomIn");
+      const zoomOut = document.getElementById("codmZoomOut");
+      const zoomReset = document.getElementById("codmZoomReset");
+      let scale = 1, startScale = 1, lastDistance = 0, lastTap = 0;
+      let offsetX = 0, offsetY = 0, startX = 0, startY = 0, startOffsetX = 0, startOffsetY = 0;
+      const pointers = new Map();
+      const clamp = (n, min, max) => Math.min(max, Math.max(min, n));
+      const distance = (a,b) => Math.hypot(a.x-b.x,a.y-b.y);
+      function render() { preview.style.transform = `translate3d(${offsetX}px,${offsetY}px,0) scale(${scale})`; }
+      function resetZoom() { scale=1; offsetX=0; offsetY=0; render(); }
+      function setScale(next) { scale=clamp(next,1,5); if(scale===1){offsetX=0;offsetY=0;} render(); }
       function closePreview() {
         lightbox.classList.remove("open");
         document.body.classList.remove("codm-zoom-open");
         preview.removeAttribute("src");
+        resetZoom(); pointers.clear();
       }
       document.querySelectorAll("#codmProfile .codm-screenshot img").forEach(img => {
         img.addEventListener("click", () => {
           preview.src = img.currentSrc || img.src;
           preview.alt = img.alt;
           caption.textContent = img.closest("figure")?.querySelector("figcaption")?.textContent || img.alt;
+          resetZoom();
           lightbox.classList.add("open");
           document.body.classList.add("codm-zoom-open");
           closeButton.focus();
         });
       });
       closeButton.addEventListener("click", closePreview);
+      zoomIn.addEventListener("click", () => setScale(scale + .5));
+      zoomOut.addEventListener("click", () => setScale(scale - .5));
+      zoomReset.addEventListener("click", resetZoom);
       lightbox.addEventListener("click", event => { if (event.target === lightbox) closePreview(); });
+      preview.addEventListener("dblclick", event => { event.preventDefault(); setScale(scale > 1 ? 1 : 2.5); });
+      preview.addEventListener("wheel", event => { event.preventDefault(); setScale(scale + (event.deltaY < 0 ? .25 : -.25)); }, {passive:false});
+      preview.addEventListener("pointerdown", event => {
+        preview.setPointerCapture(event.pointerId);
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        if(pointers.size===1){startX=event.clientX;startY=event.clientY;startOffsetX=offsetX;startOffsetY=offsetY;}
+        if(pointers.size===2){const pts=[...pointers.values()];lastDistance=distance(pts[0],pts[1]);startScale=scale;}
+      });
+      preview.addEventListener("pointermove", event => {
+        if(!pointers.has(event.pointerId)) return;
+        pointers.set(event.pointerId,{x:event.clientX,y:event.clientY});
+        if(pointers.size===2){
+          const pts=[...pointers.values()];
+          if(lastDistance>0) setScale(startScale * distance(pts[0],pts[1]) / lastDistance);
+        } else if(pointers.size===1 && scale>1){
+          offsetX=startOffsetX+(event.clientX-startX);
+          offsetY=startOffsetY+(event.clientY-startY);
+          render();
+        }
+      });
+      const endPointer = event => { pointers.delete(event.pointerId); if(pointers.size===1){const p=[...pointers.values()][0];startX=p.x;startY=p.y;startOffsetX=offsetX;startOffsetY=offsetY;} };
+      preview.addEventListener("pointerup",endPointer);
+      preview.addEventListener("pointercancel",endPointer);
       document.addEventListener("keydown", event => {
-        if (event.key === "Escape" && lightbox.classList.contains("open")) closePreview();
+        if(event.key==="Escape" && lightbox.classList.contains("open")) closePreview();
+        if(event.key==="+" && lightbox.classList.contains("open")) setScale(scale+.25);
+        if(event.key==="-" && lightbox.classList.contains("open")) setScale(scale-.25);
       });
     })();
 
@@ -573,6 +657,11 @@
   </script>
 
   <div class="codm-lightbox" id="codmLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
+    <div class="codm-lightbox-tools" aria-label="Image zoom controls">
+      <button id="codmZoomOut" type="button" aria-label="Zoom out">−</button>
+      <button id="codmZoomReset" type="button" aria-label="Reset zoom">Fit</button>
+      <button id="codmZoomIn" type="button" aria-label="Zoom in">+</button>
+    </div>
     <button class="codm-lightbox-close" id="codmLightboxClose" type="button" aria-label="Close image preview">×</button>
     <img id="codmLightboxImage" alt="">
     <div class="codm-lightbox-caption" id="codmLightboxCaption">Tap outside the image or press Escape to close</div>
