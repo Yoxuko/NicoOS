@@ -262,6 +262,20 @@
     .codm-kicker { color:#ffbf8c; font-size:10px; font-weight:800; letter-spacing:1.7px; text-transform:uppercase; }
     .codm-title { margin:4px 0 0; font-size:clamp(21px,4vw,27px); letter-spacing:-.8px; }
     .codm-status { padding:7px 10px; border:1px solid rgba(255,193,104,.25); border-radius:999px; color:#ffd38c; background:rgba(255,166,69,.08); font-size:10px; font-weight:750; white-space:nowrap; }
+    .codm-support-row { display:flex; align-items:center; flex-wrap:wrap; gap:10px; margin:-4px 0 16px; }
+    .codm-support-button { display:inline-flex; align-items:center; gap:6px; padding:10px 14px; border:1px solid rgba(255,145,135,.35); border-radius:13px; color:#ffe7e5; background:linear-gradient(120deg,rgba(190,58,68,.28),rgba(255,174,100,.12)); font:inherit; font-size:12px; font-weight:800; cursor:pointer; box-shadow:0 7px 20px rgba(0,0,0,.14); }
+    .codm-support-button span { color:#ffd2a7; font-weight:650; }
+    .codm-support-button:active { transform:scale(.98); }
+    .codm-support-hint { color:#aeb8ce; font-size:10px; }
+    .support-modal { position:fixed; inset:0; z-index:10001; display:none; align-items:center; justify-content:center; padding:18px; background:rgba(3,6,14,.84); backdrop-filter:blur(12px); -webkit-backdrop-filter:blur(12px); }
+    .support-modal.open { display:flex; }
+    .support-modal-card { position:relative; width:min(100%,390px); max-height:90vh; overflow:auto; padding:22px; border:1px solid rgba(169,184,255,.24); border-radius:22px; background:linear-gradient(145deg,#202b46,#101827); box-shadow:0 24px 70px rgba(0,0,0,.5); text-align:center; }
+    .support-modal-close { position:absolute; top:10px; right:12px; width:34px; height:34px; border:1px solid rgba(255,255,255,.16); border-radius:50%; color:#fff; background:rgba(255,255,255,.08); font-size:21px; cursor:pointer; }
+    .support-modal-title { margin:4px 30px 6px; color:#fff; font-size:20px; font-weight:850; }
+    .support-modal-copy { margin:0 auto 14px; max-width:290px; color:#b9c5dd; font-size:12px; line-height:1.55; }
+    .support-modal-qr { display:block; width:min(100%,260px); aspect-ratio:1; object-fit:contain; margin:0 auto 12px; padding:10px; border-radius:15px; background:#fff; }
+    .support-modal-steps { color:#c4cee2; font-size:11px; line-height:1.6; }
+    .support-modal-steps strong { color:#fff; }
     .codm-profile { display:grid; grid-template-columns:76px minmax(0,1fr); gap:14px; align-items:center; padding:15px; border:1px solid rgba(255,255,255,.1); border-radius:18px; background:linear-gradient(120deg,rgba(255,255,255,.065),rgba(255,255,255,.018)); }
     .codm-avatar { display:grid; place-items:center; overflow:hidden; width:76px; aspect-ratio:1; border:1px solid rgba(255,184,100,.55); border-radius:20px; background:radial-gradient(circle at 35% 25%,rgba(255,191,112,.32),transparent 58%),linear-gradient(145deg,#542b37,#1a1a2a); color:#ffe0b0; font-size:28px; font-weight:850; box-shadow:0 0 24px rgba(245,93,72,.13),inset 0 1px rgba(255,255,255,.15); }
     .codm-avatar img { display:block; width:100%; height:100%; object-fit:cover; object-position:center; }
@@ -527,6 +541,10 @@
       <div class="codm-head">
         <div><div class="codm-kicker">Operator dossier · Call of Duty Mobile</div><h2 class="codm-title" id="codmTitle">My <span style="color:#ff9b80">CODM</span> profile</h2></div>
         <span class="codm-status">✦ TIER 450 · ONLINE</span>
+      </div>
+      <div class="codm-support-row">
+        <button class="codm-support-button" id="openCodmSupport" type="button">♥ Support NicoOS <span>· GCash</span></button>
+        <span class="codm-support-hint">Optional · Any amount appreciated</span>
       </div>
       <figure class="codm-screenshot codm-profile-shot"><img src="assets/Screenshot_20261123-164932.jpg" alt="CODM player profile screenshot showing the character, Tier 450, squad and UID" loading="lazy"><figcaption>Latest player profile · Tier 450 · RXI ESPORTS</figcaption></figure>
       <div class="codm-profile">
@@ -953,6 +971,33 @@
     })();
     });
 
+    // GCash support shortcut on the CODM profile.
+    (() => {
+      const modal = document.getElementById("codmSupportModal");
+      const openButton = document.getElementById("openCodmSupport");
+      const closeButton = document.getElementById("closeCodmSupport");
+      if (!modal || !openButton || !closeButton) return;
+      const close = () => {
+        modal.classList.remove("open");
+        document.body.classList.remove("codm-support-open");
+        openButton.focus();
+      };
+      openButton.addEventListener("click", () => {
+        modal.classList.add("open");
+        document.body.classList.add("codm-support-open");
+        closeButton.focus();
+      });
+      closeButton.addEventListener("click", close);
+      modal.addEventListener("click", event => { if (event.target === modal) close(); });
+      document.addEventListener("keydown", event => {
+        if (event.key === "Escape" && modal.classList.contains("open")) {
+          event.preventDefault();
+          event.stopImmediatePropagation();
+          close();
+        }
+      }, true);
+    })();
+
     // Internal CODM hub navigation: keep the dashboard and profile in one page.
     // CODM opens through the native URL fragment, so it still works if another
     // dashboard script fails. The back link returns to the dashboard anchor.
@@ -1020,6 +1065,17 @@
     });
 
   </script>
+
+  <div class="support-modal" id="codmSupportModal" role="dialog" aria-modal="true" aria-labelledby="codmSupportTitle">
+    <div class="support-modal-card">
+      <button class="support-modal-close" id="closeCodmSupport" type="button" aria-label="Close donation QR">×</button>
+      <div class="support-top" style="justify-content:center;margin-top:5px">♥ Support this project</div>
+      <h2 class="support-modal-title" id="codmSupportTitle">Support NicoOS</h2>
+      <p class="support-modal-copy">Thank you for supporting the project! Scan this GCash QR and enter any amount you wish to give.</p>
+      <img class="support-modal-qr" src="assets/gcash-qr.svg" alt="GCash donation QR code" loading="lazy" decoding="async">
+      <div class="support-modal-steps"><strong>Before sending:</strong><br>Scan → Enter amount → Verify the recipient name → Confirm</div>
+    </div>
+  </div>
 
   <div class="codm-lightbox" id="codmLightbox" role="dialog" aria-modal="true" aria-label="Screenshot preview">
     <div class="codm-lightbox-tools" aria-label="Image zoom controls">
