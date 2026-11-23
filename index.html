@@ -438,6 +438,24 @@
       *, *:before, *:after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
     }
 
+
+    /* NicoOS support card */
+    .support-card {
+      position:relative; overflow:hidden; margin:24px 0 8px; padding:20px;
+      border:1px solid rgba(169,184,255,.2); border-radius:21px;
+      background:linear-gradient(135deg,rgba(39,52,84,.72),rgba(14,22,40,.82));
+      box-shadow:0 12px 32px rgba(0,0,0,.16),inset 0 1px rgba(255,255,255,.1);
+      -webkit-backdrop-filter:blur(14px) saturate(130%); backdrop-filter:blur(14px) saturate(130%);
+    }
+    .support-card:before { content:""; position:absolute; top:0; left:12%; right:12%; height:1px; background:linear-gradient(90deg,transparent,rgba(190,202,255,.65),transparent); }
+    .support-top { display:flex; align-items:center; gap:9px; margin-bottom:8px; color:#c7d2ff; font-size:11px; font-weight:800; letter-spacing:.13em; text-transform:uppercase; }
+    .support-title { margin:0 0 7px; font-size:19px; font-weight:800; }
+    .support-copy { max-width:580px; margin:0; color:#aebbd6; font-size:13px; line-height:1.65; }
+    .support-options { display:flex; flex-wrap:wrap; gap:8px; margin-top:15px; }
+    .support-option { display:inline-flex; align-items:center; gap:7px; padding:9px 12px; border:1px solid rgba(169,184,255,.17); border-radius:12px; background:rgba(5,11,23,.28); color:#dbe3ff; font-size:12px; font-weight:700; }
+    .support-note { margin:12px 0 0; color:#8190ad; font-size:11px; }
+    @media (max-width:560px) { .support-card { margin-top:20px; padding:17px; } }
+
   </style>
 </head>
 <body>
@@ -472,6 +490,18 @@
       <a class="app-card" href="https://www.roblox.com/share?code=a58f9da28a522a4bbdbb10fb11491fc7&amp;type=Profile&amp;source=ProfileShare&amp;stamp=1794385791183"><span class="app-icon">◆</span><span class="app-bottom">Roblox <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="https://github.com/"><span class="app-icon">⌘</span><span class="app-bottom">GitHub <span class="app-arrow">↗</span></span></a>
       <a class="app-card" href="#codmProfile" id="codmAppCard" aria-controls="codmProfile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty Mobile <span class="app-arrow">↗</span></span></a>
+    </section>
+
+
+    <section class="support-card" aria-labelledby="supportTitle">
+      <div class="support-top"><span aria-hidden="true">♥</span> Support this project</div>
+      <h2 class="support-title" id="supportTitle">Enjoying NicoOS?</h2>
+      <p class="support-copy">If you like this little project, you can help support its development. Every contribution is completely optional and appreciated. Thank you for being here!</p>
+      <div class="support-options" aria-label="Planned donation methods">
+        <span class="support-option">₱ GCash</span>
+        <span class="support-option">☕ Ko-fi</span>
+      </div>
+      <p class="support-note">Donation links will be added soon.</p>
     </section>
 
     <section class="codm-section" id="codmProfile" aria-labelledby="codmTitle">
