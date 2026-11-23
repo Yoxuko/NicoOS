@@ -544,6 +544,8 @@
     });
 
 
+    // Initialize after the lightbox markup has been parsed.
+    document.addEventListener("DOMContentLoaded", () => {
     // Fullscreen image viewer: tap to open, pinch/double-tap to zoom, drag when zoomed.
     (() => {
       const lightbox = document.getElementById("codmLightbox");
@@ -612,6 +614,7 @@
         if(event.key==="-" && lightbox.classList.contains("open")) setScale(scale-.25);
       });
     })();
+    });
 
     // Internal CODM hub navigation: keep the dashboard and profile in one page.
     // CODM opens through the native URL fragment, so it still works if another
