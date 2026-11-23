@@ -407,6 +407,37 @@
 
   
 
+
+    /* Adaptive rendering: keep the full glass look on capable devices. */
+    html.performance-mode { scroll-behavior:auto; }
+    html.performance-mode body:before {
+      filter:blur(9px) saturate(108%);
+      animation:none;
+      transform:none;
+      will-change:auto;
+      opacity:.68;
+    }
+    html.performance-mode body:after { opacity:.08; }
+    html.performance-mode .app-card,
+    html.performance-mode .notes-panel,
+    html.performance-mode .search-wrap,
+    html.performance-mode .codm-section {
+      -webkit-backdrop-filter:none;
+      backdrop-filter:none;
+      box-shadow:0 7px 18px rgba(0,0,0,.13);
+    }
+    html.performance-mode .app-card,
+    html.performance-mode .app-card *,
+    html.performance-mode .brand:after {
+      animation:none !important;
+      transition-duration:.12s !important;
+    }
+    html.performance-mode .codm-build { content-visibility:auto; contain-intrinsic-size:auto 560px; }
+    @media (prefers-reduced-motion:reduce) {
+      html { scroll-behavior:auto !important; }
+      *, *:before, *:after { animation-duration:.01ms !important; animation-iteration-count:1 !important; transition-duration:.01ms !important; }
+    }
+
   </style>
 </head>
 <body>
@@ -735,6 +766,26 @@
 
   </main>
   <script>
+
+    // Choose rendering effects from device capability, not a specific phone model.
+    (function adaptiveRendering() {
+      const root = document.documentElement;
+      const cores = Number(navigator.hardwareConcurrency || 0);
+      const memory = Number(navigator.deviceMemory || 0);
+      const mobile = matchMedia("(max-width: 700px), (pointer: coarse)").matches;
+      const constrained = mobile && ((memory > 0 && memory <= 4) || (cores > 0 && cores <= 4));
+      if (constrained) root.classList.add("performance-mode");
+
+      // Decode images off the critical rendering path; retain lazy loading for below-fold shots.
+      document.querySelectorAll("img").forEach((img, index) => {
+        img.decoding = "async";
+        if (index === 0) {
+          img.loading = "eager";
+          img.fetchPriority = "high";
+        }
+      });
+    })();
+
     function updateClock() {
       const now = new Date();
       document.getElementById("time").textContent = now.toLocaleTimeString();
