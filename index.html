@@ -569,17 +569,18 @@
         preview.removeAttribute("src");
         resetZoom(); pointers.clear();
       }
-      document.querySelectorAll("#codmProfile .codm-screenshot img").forEach(img => {
-        img.addEventListener("click", () => {
-          preview.src = img.currentSrc || img.src;
-          preview.alt = img.alt;
-          caption.textContent = img.closest("figure")?.querySelector("figcaption")?.textContent || img.alt;
-          resetZoom();
-          lightbox.classList.add("open");
-          document.body.classList.add("codm-zoom-open");
-          closeButton.focus();
-        });
-      });
+      // Delegated click handler: works for every current or future CODM screenshot.
+      document.addEventListener("click", event => {
+        const img = event.target.closest && event.target.closest("#codmProfile .codm-screenshot img");
+        if (!img) return;
+        event.preventDefault();
+        preview.src = img.currentSrc || img.src;
+        preview.alt = img.alt || "CODM screenshot";
+        caption.textContent = img.closest("figure")?.querySelector("figcaption")?.textContent || img.alt || "";
+        resetZoom();
+        lightbox.classList.add("open");
+        document.body.classList.add("codm-zoom-open");
+      }, true);
       closeButton.addEventListener("click", closePreview);
       zoomIn.addEventListener("click", () => setScale(scale + .5));
       zoomOut.addEventListener("click", () => setScale(scale - .5));
