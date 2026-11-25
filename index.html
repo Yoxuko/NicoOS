@@ -85,6 +85,7 @@
     .app-icon { display:grid; place-items:center; width:39px; height:39px; border-radius:13px; background:rgba(151,171,255,.11); font-size:19px; }
     .app-bottom { display:flex; justify-content:space-between; align-items:center; gap:6px; font-size:13px; font-weight:650; }
     .app-arrow { color:#8293bd; font-size:17px; }
+    .quick-notes-block { grid-column:1 / -1; width:100%; min-width:0; margin:0 0 30px; }
     .notes-toggle { padding:8px 12px; border:1px solid rgba(169,184,255,.22); border-radius:11px; background:rgba(151,171,255,.1); color:#eaf0ff; font:inherit; font-size:12px; font-weight:700; cursor:pointer; }
     .notes-toggle:focus-visible { outline:2px solid #aebfff; outline-offset:3px; }
     .notes-panel { padding:20px; border:1px solid rgba(180,198,245,.2); border-radius:22px; background:linear-gradient(145deg,rgba(35,48,76,.68),rgba(12,21,38,.76)); box-shadow:0 16px 42px rgba(0,0,0,.18),inset 0 1px rgba(255,255,255,.12); -webkit-backdrop-filter:blur(20px) saturate(140%); backdrop-filter:blur(20px) saturate(140%); }
@@ -513,6 +514,36 @@
       <a class="app-card" href="#codmProfile" id="codmAppCard" aria-controls="codmProfile"><span class="app-icon">🎮</span><span class="app-bottom">Call of Duty Mobile <span class="app-arrow">↗</span></span></a>
     </section>
 
+    <section class="quick-notes-block" aria-labelledby="quickNotesTitle">
+<div class="section-head">
+      <h2 id="quickNotesTitle">Quick notes <span class="accent">✎</span></h2>
+      <div style="display:flex;align-items:center;gap:10px;flex-wrap:wrap"><span class="section-hint">Private & encrypted</span><button class="notes-toggle" id="notesToggle" type="button" aria-expanded="true" aria-controls="quickNotes">Hide notes ↑</button></div>
+    </div>
+    <section class="notes-panel" id="quickNotes">
+      <div id="pinSetup" hidden>
+        <h3 class="notes-title">🔐 Set your Notes PIN</h3>
+        <p class="muted">Create a 6-digit PIN. You will need it to unlock your encrypted notes.</p>
+        <input id="newPin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Create 6-digit PIN" autocomplete="new-password">
+        <div style="height:10px"></div>
+        <input id="confirmPin" type="password" inputmode="numeric" maxlength="6" pattern="[0-9]{6}" placeholder="Confirm PIN" autocomplete="new-password">
+        <div class="note-actions"><button id="savePin">Create PIN &amp; unlock</button></div>
+        <p class="pin-status" id="setupStatus" role="status"></p>
+      </div>
+      <div id="pinUnlock" hidden>
+        <h3 class="notes-title">🔒 Notes are locked</h3>
+        <p class="muted">Enter your 6-digit PIN to unlock your private notes.</p>
+        <input id="unlockPin" type="password" inputmode="numeric" maxlength="6" placeholder="Enter 6-digit PIN" autocomplete="current-password">
+        <div class="note-actions"><button id="unlockButton">Unlock notes</button></div>
+        <p class="pin-status" id="unlockStatus" role="status"></p>
+      </div>
+      <div id="notesArea" hidden>
+        <textarea id="notes" placeholder="Write your ideas here..."></textarea>
+        <p class="notes-foot" id="saveStatus" role="status" aria-live="polite">Your notes are stored securely on this device.</p>
+        <div class="note-actions"><button class="secondary" id="lockNotes">🔒 Lock now</button></div>
+        <p class="notes-foot">Encrypted and saved in this browser on this device.</p>
+      </div>
+    </section>
+    </section>
 
     <section class="support-card" aria-labelledby="supportTitle">
       <div class="support-top"><span aria-hidden="true">♥</span> Support this project</div>
@@ -1063,6 +1094,157 @@
         window.setTimeout(() => { button.textContent = originalLabel; }, 1800);
       });
     });
+
+      // Quick Notes: AES-GCM encryption with a key derived from the user's PIN.
+    const notes = document.getElementById("notes");
+    const pinSetup = document.getElementById("pinSetup");
+    const pinUnlock = document.getElementById("pinUnlock");
+    const notesArea = document.getElementById("notesArea");
+    const setupStatus = document.getElementById("setupStatus");
+    const unlockStatus = document.getElementById("unlockStatus");
+    const saveStatus = document.getElementById("saveStatus");
+    const STORAGE_KEY = "nicoos-notes-encrypted-v1";
+    let saveTimer;
+
+    // Toggle the notes panel without changing its encrypted storage or PIN flow.
+    const notesToggle = document.getElementById("notesToggle");
+    notesToggle.addEventListener("click", () => {
+      const isOpen = notesToggle.getAttribute("aria-expanded") === "true";
+      notesToggle.setAttribute("aria-expanded", String(!isOpen));
+      notesToggle.textContent = isOpen ? "Open notes ↓" : "Hide notes ↑";
+      document.getElementById("quickNotes").hidden = isOpen;
+      if (!isOpen) document.getElementById("quickNotes").scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    function showNotesState(state) {
+      pinSetup.hidden = state !== "setup";
+      pinUnlock.hidden = state !== "locked";
+      notesArea.hidden = state !== "unlocked";
+    }
+
+    function bytesToBase64(bytes) {
+      return btoa(String.fromCharCode(...new Uint8Array(bytes)));
+    }
+    function base64ToBytes(value) {
+      return Uint8Array.from(atob(value), c => c.charCodeAt(0));
+    }
+    async function deriveKey(pin, salt) {
+      const material = await crypto.subtle.importKey(
+        "raw", new TextEncoder().encode(pin), "PBKDF2", false, ["deriveKey"]
+      );
+      return crypto.subtle.deriveKey(
+        { name: "PBKDF2", salt, iterations: 250000, hash: "SHA-256" },
+        material, { name: "AES-GCM", length: 256 }, false, ["encrypt", "decrypt"]
+      );
+    }
+    async function encryptAndSave() {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      const salt = base64ToBytes(saved.salt);
+      const key = await deriveKey(window.__nicoNotesPin, salt);
+      const iv = crypto.getRandomValues(new Uint8Array(12));
+      const encrypted = await crypto.subtle.encrypt(
+        { name: "AES-GCM", iv }, key, new TextEncoder().encode(notes.value)
+      );
+      localStorage.setItem(STORAGE_KEY, JSON.stringify({
+        salt: saved.salt, iv: bytesToBase64(iv), data: bytesToBase64(encrypted)
+      }));
+    }
+    function lockNotes() {
+      clearTimeout(saveTimer);
+      window.__nicoNotesPin = null;
+      notes.value = "";
+      showNotesState("locked");
+      document.getElementById("unlockPin").value = "";
+      unlockStatus.textContent = "";
+    }
+    async function unlockWithPin(pin) {
+      const saved = JSON.parse(localStorage.getItem(STORAGE_KEY));
+      const key = await deriveKey(pin, base64ToBytes(saved.salt));
+      const decrypted = await crypto.subtle.decrypt(
+        { name: "AES-GCM", iv: base64ToBytes(saved.iv) },
+        key, base64ToBytes(saved.data)
+      );
+      window.__nicoNotesPin = pin;
+      notes.value = new TextDecoder().decode(decrypted);
+      showNotesState("unlocked");
+    }
+
+    if (!window.crypto || !crypto.subtle) {
+      showNotesState("setup");
+      setupStatus.textContent = "Secure encryption is unavailable. Open NicoOS using its HTTPS GitHub Pages address.";
+    } else {
+      showNotesState(localStorage.getItem(STORAGE_KEY) ? "locked" : "setup");
+    }
+
+    document.getElementById("savePin").addEventListener("click", async () => {
+      const pin = document.getElementById("newPin").value;
+      const confirm = document.getElementById("confirmPin").value;
+      if (!/^\d{6}$/.test(pin)) {
+        setupStatus.textContent = "Please enter exactly 6 digits.";
+        return;
+      }
+      if (pin !== confirm) {
+        setupStatus.textContent = "PINs do not match. Try again.";
+        return;
+      }
+      try {
+        const salt = crypto.getRandomValues(new Uint8Array(16));
+        const key = await deriveKey(pin, salt);
+        const iv = crypto.getRandomValues(new Uint8Array(12));
+        const initialNotes = localStorage.getItem("nicoos-notes") || "";
+        const encrypted = await crypto.subtle.encrypt(
+          { name: "AES-GCM", iv }, key, new TextEncoder().encode(initialNotes)
+        );
+        localStorage.setItem(STORAGE_KEY, JSON.stringify({
+          salt: bytesToBase64(salt), iv: bytesToBase64(iv), data: bytesToBase64(encrypted)
+        }));
+        localStorage.removeItem("nicoos-notes");
+        window.__nicoNotesPin = pin;
+        notes.value = initialNotes;
+        showNotesState("unlocked");
+      } catch (error) {
+        setupStatus.textContent = "Could not set up encryption in this browser.";
+      }
+    });
+
+    document.getElementById("unlockButton").addEventListener("click", async () => {
+      const pin = document.getElementById("unlockPin").value;
+      if (!/^\d{6}$/.test(pin)) {
+        unlockStatus.textContent = "Enter your 6-digit PIN.";
+        return;
+      }
+      try {
+        await unlockWithPin(pin);
+      } catch (error) {
+        unlockStatus.textContent = "Incorrect PIN. Your notes are still locked.";
+      }
+    });
+
+    document.getElementById("lockNotes").addEventListener("click", async () => {
+      try { await encryptAndSave(); } catch (error) {
+        alert("Could not save encrypted notes. Keep this page open and try again.");
+        return;
+      }
+      lockNotes();
+    });
+
+    notes.addEventListener("input", () => {
+      clearTimeout(saveTimer);
+      saveStatus.textContent = "Unsaved changes…";
+      saveTimer = setTimeout(() => {
+        encryptAndSave().then(() => {
+          saveStatus.textContent = "✓ Saved securely on this device";
+        }).catch(() => {
+          saveStatus.textContent = "Couldn't save. Check your browser storage.";
+        });
+      }, 500);
+    });
+
+    // Save the latest edits before leaving the page, then require the PIN next visit.
+    window.addEventListener("pagehide", () => {
+      if (window.__nicoNotesPin) encryptAndSave().catch(() => {});
+    });
+  
 
   </script>
 
